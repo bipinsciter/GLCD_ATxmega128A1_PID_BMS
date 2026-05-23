@@ -37,12 +37,50 @@ static SENSOR_VALUE sensorVal[TOTAL_VAL_INDEX];
 //static ips7100_pc_value_t isp7100_pc_1,isp7100_pc_2;
 //static ips7100_pm_value_t isp7100_pm_1,isp7100_pm_2;
 
-static int lastval1=0,lastval2=0,lastval3=0;
+//static int lastval1=0,lastval2=0,lastval3=0;
 //static uint8_t checktime1=0,checktime2=0,checktime3=0;
 
+// Kalman filter structure
+typedef struct {
+	float Q;       // Process noise covariance
+	float R;       // Measurement noise covariance
+	float X;       // State estimate
+	float P;       // Estimate covariance
+	float K;       // Kalman gain
+} KalmanFilter;
+static KalmanFilter Kalmanfilter[TOTAL_VAL_INDEX] = {0};
+	
+void Kalman_Init(KalmanFilter *kf, float q, float r, float initial_estimate);
+int Kalman_Update(KalmanFilter *kf, float measurement);
+
+// Initialize the Kalman filter
+void Kalman_Init(KalmanFilter *kf, float q, float r, float initial_estimate)
+{
+	kf->Q = q;          // Process noise covariance
+	kf->R = r;          // Measurement noise covariance
+	kf->X = initial_estimate;  // Initial estimate
+	kf->P = 1.0;        // Initial estimate covariance
+}
+
+// Update the Kalman filter with a new measurement
+int Kalman_Update(KalmanFilter *kf, float measurement)
+{
+	// Prediction update
+	kf->P += kf->Q;
+
+	// Measurement update
+	kf->K = kf->P / (kf->P + kf->R);
+	kf->X += kf->K * (measurement - kf->X);
+	kf->P *= (1 - kf->K);
+
+	return (int)kf->X;
+}
+
+
+	
 static OSSemaMutex DeviceValueMutex;
 
-static void AveragePara( uint8_t SenNo, uint16_t NoofSample, uint8_t error, unsigned int rawVal, int convertedVal );
+static void AveragePara( uint8_t SenNo, uint8_t error, unsigned int rawVal, int convertedVal );
 
 static void DoIOPortMapping();
 
@@ -113,6 +151,11 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 		//wdt_reset();			//Serve Watchdog Timer
 		//OSSleep(1000);
 	//}
+	
+	// Kalman filter for pressure
+	Kalman_Init(&Kalmanfilter[DP1_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+	Kalman_Init(&Kalmanfilter[DP2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+	Kalman_Init(&Kalmanfilter[DP3_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 
 	while (1)
 	{
@@ -128,16 +171,16 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP1_ZERO_ADJ);
 
-			if((abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)>GetParameterValue(DP1_SENS_MIN)) && (abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)<GetParameterValue(DP1_SENS_MAX)))
-			{
-				sensorVal[DP1_VAL_INDEX].convertedValue=lastval1;
-			}
-			else
-			{
-				lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
-			}
+			//if((abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)>GetParameterValue(DP1_SENS_MIN)) && (abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)<GetParameterValue(DP1_SENS_MAX)))
+			//{
+				//sensorVal[DP1_VAL_INDEX].convertedValue=lastval1;
+			//}
+			//else
+			//{
+				//lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
+			//}
 			
-			AveragePara(DP1_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
+			AveragePara(DP1_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
 		if (IsDP2Enabled())
@@ -147,16 +190,16 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP2_ZERO_ADJ);
 
-			if((abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)>GetParameterValue(DP2_SENS_MIN)) && (abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)<GetParameterValue(DP2_SENS_MAX)))
-			{
-				sensorVal[DP2_VAL_INDEX].convertedValue=lastval2;
-			}
-			else
-			{
-				lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
-			}
+			//if((abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)>GetParameterValue(DP2_SENS_MIN)) && (abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)<GetParameterValue(DP2_SENS_MAX)))
+			//{
+				//sensorVal[DP2_VAL_INDEX].convertedValue=lastval2;
+			//}
+			//else
+			//{
+				//lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
+			//}
 
-			AveragePara(DP2_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
+			AveragePara(DP2_VAL_INDEX, retVal, value, convertedValue );
 		}
 	  
 		if (IsDP3Enabled())
@@ -166,16 +209,16 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP3_ZERO_ADJ);
 
-			if((abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)>GetParameterValue(DP3_SENS_MIN)) && (abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)<GetParameterValue(DP3_SENS_MAX)))
-			{
-				sensorVal[DP3_VAL_INDEX].convertedValue=lastval3;
-			}
-			else
-			{
-				lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
-			}
+			//if((abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)>GetParameterValue(DP3_SENS_MIN)) && (abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)<GetParameterValue(DP3_SENS_MAX)))
+			//{
+				//sensorVal[DP3_VAL_INDEX].convertedValue=lastval3;
+			//}
+			//else
+			//{
+				//lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
+			//}
 			
-			AveragePara(DP3_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
+			AveragePara(DP3_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
 		oldAlarmOut.alarmByte = alarmOut.alarmByte;
@@ -452,6 +495,9 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				buzzerOut.alarm.humidityHigh = 0;
 				buzzerOut.alarm.humidityLow = 0;
 			}
+			
+			buzzerOut.alarm.fire = alarmOut.alarm.fire;
+			buzzerOut.alarm.door = alarmOut.alarm.door;
 		}
 
 		//LED_PORT = ~ledState.ledByte;
@@ -626,6 +672,7 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 static void DoIOPortMapping()
 {
    if(alarmOut.alarm.fire==1) return;
+   if(alarmOut.alarm.door==1) return;
 	
    uint8_t inputs = INPUT_PORT_IN & 0x1F;
    if(DOOR_SENSE) inputs |= PIN5_bm;
@@ -797,12 +844,26 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 		//wdt_reset();			//Serve Watchdog Timer
 		//OSSleep(1000);
 	//}
+	
+	Kalman_Init(&Kalmanfilter[TEMPERATURE_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+	Kalman_Init(&Kalmanfilter[HUMIDITY_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+	Kalman_Init(&Kalmanfilter[TEMPERATURE2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+	Kalman_Init(&Kalmanfilter[HUMIDITY2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
  
 	while (1)
 	{
 		//PORTA_OUTTGL = _BV(2);
 		wdt_reset();			//Serve Watchdog Timer
-	    		
+	    	
+		if(CurrentDoorStatus()==OPEN)
+		{
+			alarmOut.alarm.door=1;
+		}
+		else
+		{
+			alarmOut.alarm.door=0;
+		}
+		
 		if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT25 )
 		{
 			if (IsTemperatureEnabled())
@@ -818,7 +879,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(TEMPERATURE_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 			}
 
 			if (IsHumidityEnabled())
@@ -834,7 +895,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(HUMIDITY_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
 			}
 		}
 		//else if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
@@ -854,7 +915,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//{
 					//value = convertedValue = 0;
 				//}
-				//AveragePara(TEMPERATURE_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 			//}
 			//else
 			//{
@@ -869,7 +930,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//}
 				//value1 = convertedValue = 0;
 //
-				//AveragePara(HUMIDITY_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value1, convertedValue );
+				//AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
 			//}
 		//}
 		else if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
@@ -897,7 +958,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(TEMPERATURE_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 			}
 		
 			if (IsHumidityEnabled())
@@ -912,7 +973,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value1 = convertedValue = 0;
 				}
 			
-				AveragePara(HUMIDITY_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value1, convertedValue );
+				AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
 			}
 		}
 		//====================================================================================================
@@ -932,7 +993,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(TEMPERATURE2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
 	
 				retVal = GetSensorSHT25Humidity(1, &value, &checkSum );
 				
@@ -945,7 +1006,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(HUMIDITY2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(HUMIDITY2_VAL_INDEX, retVal, value, convertedValue );
 			}
 		}
 		//else if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
@@ -962,7 +1023,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//{
 					//value = convertedValue = 0;
 				//}
-				//AveragePara(TEMPERATURE2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				//AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
 	//
 				//if (IsHumidityEnabled())
 				//{  /* Timer * 3 */
@@ -975,7 +1036,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//}
 				//value1 = convertedValue = 0;
 //
-				//AveragePara(HUMIDITY2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value1, convertedValue );
+				//AveragePara(HUMIDITY2_VAL_INDEX, retVal, value1, convertedValue );
 			//}	
 		//}
 		else if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
@@ -1000,7 +1061,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(TEMPERATURE2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value, convertedValue );
+				AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
 	
 				// Convert the value to unit
 				if ( retVal == ERROR_OK )
@@ -1012,7 +1073,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value1 = convertedValue = 0;
 				}
 				
-				AveragePara(HUMIDITY2_VAL_INDEX, GetParameterValue(TEMP_RH_READING_AVERAGE), retVal, value1, convertedValue );
+				AveragePara(HUMIDITY2_VAL_INDEX, retVal, value1, convertedValue );
 			}
 		}
 
@@ -1195,61 +1256,27 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 	//}
 //}
 
-// Kalman filter structure
-typedef struct {
-	float Q;       // Process noise covariance
-	float R;       // Measurement noise covariance
-	float X;       // State estimate
-	float P;       // Estimate covariance
-	float K;       // Kalman gain
-} KalmanFilter;
 
-void Kalman_Init(KalmanFilter *kf, float q, float r, float initial_estimate);
-int Kalman_Update(KalmanFilter *kf, float measurement);
-
-// Initialize the Kalman filter
-void Kalman_Init(KalmanFilter *kf, float q, float r, float initial_estimate) 
-{
-	kf->Q = q;          // Process noise covariance
-	kf->R = r;          // Measurement noise covariance
-	kf->X = initial_estimate;  // Initial estimate
-	kf->P = 1.0;        // Initial estimate covariance
-}
-
-// Update the Kalman filter with a new measurement
-int Kalman_Update(KalmanFilter *kf, float measurement) 
-{
-	// Prediction update
-	kf->P += kf->Q;
-
-	// Measurement update
-	kf->K = kf->P / (kf->P + kf->R);
-	kf->X += kf->K * (measurement - kf->X);
-	kf->P *= (1 - kf->K);
-
-	return (int)kf->X;
-}
-
-static KalmanFilter Kalmanfilter[TOTAL_VAL_INDEX] = {0};
-static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
+//static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
 //static long sampleSum[TOTAL_VAL_INDEX] = {0};
 //static int sampleBuf[TOTAL_VAL_INDEX][30] = {0};
 //static char BufPtr[TOTAL_VAL_INDEX] = {0};
 //static int LastconvertedVal[TOTAL_VAL_INDEX] = {0};
-static void AveragePara( uint8_t SenNo, uint16_t NoofSample, uint8_t error, unsigned int rawVal, int convertedVal )
+static void AveragePara( uint8_t SenNo, uint8_t error, unsigned int rawVal, int convertedVal )
 {
-	if( AverageSamples[SenNo] != NoofSample)
-	{
-		AverageSamples[SenNo] = NoofSample;
-
-		// Kalman filter for pressure
-		Kalman_Init(&Kalmanfilter[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
-	}
-	else
-	{
-		convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
-	}
+	//if( AverageSamples[SenNo] != NoofSample)
+	//{
+		//AverageSamples[SenNo] = NoofSample;
+//
+		//// Kalman filter for pressure
+		//Kalman_Init(&Kalmanfilter[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
+	//}
+	//else
+	//{
+		//convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
+	//}
 	
+	convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
 	OSSemaTakeEver(DeviceValueMutex);
 	sensorVal[SenNo].errorCode = error;
 	sensorVal[SenNo].rawValue = rawVal;

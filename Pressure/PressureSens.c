@@ -176,6 +176,8 @@ uint8_t GetSensorDP3_SM9543( int *pressure)
 	*pressure |= data[1];
 	*pressure &= 0x3FFF;
 	
+	//*pressure = *pressure - 1638;
+	
 	//temp1 = data[2];
 	//temp1 <<= 8;
 	//temp1 |= data[3];

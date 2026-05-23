@@ -95,17 +95,18 @@ typedef union
 	uint16_t alarmByte;
 	struct
 	{
-		unsigned absPressHigh    :1;  //LSB
-		unsigned absPressLow     :1;
-		unsigned diffPressHigh   :1;
-		unsigned diffPressLow    :1;
-		unsigned tempHigh        :1;
-		unsigned tempLow         :1;
-		unsigned humidityHigh    :1;
-		unsigned humidityLow     :1;
-		unsigned diffPress3High  :1;
-		unsigned diffPress3Low   :1;
-		unsigned fire   :1;
+		uint16_t absPressHigh    :1;  //LSB
+		uint16_t absPressLow     :1;
+		uint16_t diffPressHigh   :1;
+		uint16_t diffPressLow    :1;
+		uint16_t tempHigh        :1;
+		uint16_t tempLow         :1;
+		uint16_t humidityHigh    :1;
+		uint16_t humidityLow     :1;
+		uint16_t diffPress3High  :1;
+		uint16_t diffPress3Low   :1;
+		uint16_t fire   :1;
+		uint16_t door   :1;
 	}alarm;
 }ALARMS;
 

@@ -375,98 +375,100 @@ void Init_InternalRTC(void)
 
 void SetDefault(void)
 {	
-	if(eeprom_read_word((unsigned int *)EA_DEFAULT_SAVE)!=0xCBCD)
+	if(eeprom_read_word((unsigned int *)EA_DEFAULT_SAVE)!=0xABCD)
 	{
 		OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~27007);	//10623 //2429
 		//OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~10623);	//10623 //2429
 		//OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~27000);	//10623 //2429
 		
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_READING_AVERAGE, 20);
-		OSWriteEEPromWord((unsigned int *)EA_PRES_READING_AVERAGE, 20);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_READING_AVERAGE, 20);
+		//OSWriteEEPromWord((unsigned int *)EA_PRES_READING_AVERAGE, 20);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP1_SENS_TYPE, PRES_SENS_SM9543);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_SENS_TYPE, PRES_SENS_SM9543);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_SENS_TYPE, PRES_SENS_SM9543);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_SENS_TYPE, TEMP_RH_SENS_SHT25);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_RH2_SENS_TYPE, TEMP_RH_SENS_SHT25);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_SENS_TYPE, PRES_SENS_SM9543);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_SENS_TYPE, PRES_SENS_SM9543);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_SENS_TYPE, PRES_SENS_SM9543);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_SENS_TYPE, TEMP_RH_SENS_SHT25);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH2_SENS_TYPE, TEMP_RH_SENS_SHT25);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP1_UNIT, PRESSURE_PA);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_UNIT, PRESSURE_PA);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_UNIT, PRESSURE_PA);
-		OSWriteEEPromWord((unsigned int *)EA_TEMPERATURE_UNIT, TEMPERATURE_DEG_C);
-		OSWriteEEPromWord((unsigned int *)EA_HUMIDITY_UNIT, HUMIDITY_RH);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_UNIT, PRESSURE_PA);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_UNIT, PRESSURE_PA);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_UNIT, PRESSURE_PA);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMPERATURE_UNIT, TEMPERATURE_DEG_C);
+		//OSWriteEEPromWord((unsigned int *)EA_HUMIDITY_UNIT, HUMIDITY_RH);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DISPLAY_MODE, DISP_MODE_ALL_PARA);
+		//OSWriteEEPromWord((unsigned int *)EA_DISPLAY_MODE, DISP_MODE_ALL_PARA);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP1_RANGE, 1000);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_RANGE, 1000);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_RANGE, 1000);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_RANGE, 1220);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_RANGE, 1220);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_RANGE, 1220);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DEVICE_ID, 1);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_ZERO_ADJ, 0);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_ZERO_ADJ, 0);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_ZERO_ADJ, 0);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_ZERO_ADJ, 0);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP2_ZERO_ADJ, 0);
-		OSWriteEEPromWord((unsigned int *)EA_RH_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_DEVICE_ID, 1);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP2_ZERO_ADJ, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_ZERO_ADJ, 0);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP1_AREA_TYPE, PRES_AREA_SQUARE);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_ALARM_SETUP, ALARM_DISABLED);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+327);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+311);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-163);
-		OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-147);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_AREA_TYPE, PRES_AREA_SQUARE);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_ALARM_SETUP, ALARM_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+327);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+311);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-163);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-147);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP2_AREA_TYPE, PRES_AREA_SQUARE);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_ALARM_SETUP, ALARM_DISABLED);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+327);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+311);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-163);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-147);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_AREA_TYPE, PRES_AREA_SQUARE);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_ALARM_SETUP, ALARM_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+327);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+311);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-163);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-147);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP3_AREA_TYPE, PRES_AREA_SQUARE);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_ALARM_SETUP, ALARM_DISABLED);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+327);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+311);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-163);
-		OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-147);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_AREA_TYPE, PRES_AREA_SQUARE);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_ALARM_SETUP, ALARM_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+327);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+311);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-163);
+		//OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-147);
 		
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_ALARM_SETUP, ALARM_DISABLED);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_ON_LIMIT, 2510);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_OFF_LIMIT, 2500);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_OFF_LIMIT, 2110);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_ON_LIMIT, 2100);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_FIRE_ALM_SET, 7500);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_ALARM_SETUP, ALARM_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_ON_LIMIT, 2510);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_OFF_LIMIT, 2500);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_OFF_LIMIT, 2110);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_ON_LIMIT, 2100);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_FIRE_ALM_SET, 7500);
 		
-		OSWriteEEPromWord((unsigned int *)EA_RH_ALARM_SETUP, ALARM_DISABLED);
-		OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_ON_LIMIT, 6010);
-		OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_OFF_LIMIT, 6000);
-		OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_OFF_LIMIT, 5010);
-		OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_ON_LIMIT, 5000);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_ALARM_SETUP, ALARM_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_ON_LIMIT, 6010);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_OFF_LIMIT, 6000);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_OFF_LIMIT, 5010);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_ON_LIMIT, 5000);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DP1_OUTPUT_TYPE, 0);
-		OSWriteEEPromWord((unsigned int *)EA_DP2_OUTPUT_TYPE, 0);
-		OSWriteEEPromWord((unsigned int *)EA_TEMP_OUTPUT_TYPE, 0);
-		OSWriteEEPromWord((unsigned int *)EA_RH_OUTPUT_TYPE, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_DP1_OUTPUT_TYPE, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_DP2_OUTPUT_TYPE, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_TEMP_OUTPUT_TYPE, 0);
+		//OSWriteEEPromWord((unsigned int *)EA_RH_OUTPUT_TYPE, 0);
 		
-		OSWriteEEPromWord((unsigned int *)EA_RTC_SETUP, RTC_DISABLED);
+		//OSWriteEEPromWord((unsigned int *)EA_RTC_SETUP, RTC_DISABLED);
 		
-		OSWriteEEPromWord((unsigned int *)EA_BUZZER_ON_TIME, 1);
-		OSWriteEEPromWord((unsigned int *)EA_BUZZER_OFF_TIME, 3);
-		OSWriteEEPromWord((unsigned int *)EA_BUZZER_DISABLE_TIME, 600);
+		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_ON_TIME, 1);
+		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_OFF_TIME, 5);
+		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_DISABLE_TIME, 600);
 		
-		OSWriteEEPromWord((unsigned int *)EA_SERIAL_BAUD_RATE_VAL, SERIAL_BAUD_57600);
-		OSWriteEEPromWord((unsigned int *)EA_SERIAL_DATA_STOP_PARITY_VAL, (3<<SERIAL_DATA_BITS_SHIFT) | (0<<SERIAL_STOP_BIT_SHIFT) | (SERIAL_PARITY_NONE << SERIAL_PARITY_SHIFT));
+		//OSWriteEEPromWord((unsigned int *)EA_SERIAL_BAUD_RATE_VAL, SERIAL_BAUD_57600);
+		//OSWriteEEPromWord((unsigned int *)EA_SERIAL_DATA_STOP_PARITY_VAL, (3<<SERIAL_DATA_BITS_SHIFT) | (0<<SERIAL_STOP_BIT_SHIFT) | (SERIAL_PARITY_NONE << SERIAL_PARITY_SHIFT));
 
 		memset(&gu8_inOutput[0][0],0,160);
+		//Input ----------------------------------
 		strcpy(&gu8_inOutput[0][0],"MANUAL");
 		strcpy(&gu8_inOutput[1][0],"AUTO");
-		strcpy(&gu8_inOutput[2][0],"MANUAL");
-		strcpy(&gu8_inOutput[3][0],"AUTO");
+		strcpy(&gu8_inOutput[2][0],"ON");
+		strcpy(&gu8_inOutput[3][0],"OFF");
 		strcpy(&gu8_inOutput[4][0],"MANUAL");
-		strcpy(&gu8_inOutput[5][0],"AUTO");
+		strcpy(&gu8_inOutput[5][0],"VFD");
 		strcpy(&gu8_inOutput[6][0],"MANUAL");
 		strcpy(&gu8_inOutput[7][0],"AUTO");
+		//Output ----------------------------------
 		strcpy(&gu8_inOutput[8][0],"MANUAL");
 		strcpy(&gu8_inOutput[9][0],"AUTO");
 		strcpy(&gu8_inOutput[10][0],"MANUAL");
@@ -478,7 +480,7 @@ void SetDefault(void)
 		
 		OSWriteEEPromBlock((uint8_t*)EA_IP1_HIGH_NAME,(uint8_t*)&gu8_inOutput[0][0],160);
 		
-		OSWriteEEPromWord((unsigned int *)EA_DEFAULT_SAVE, 0xCBCD);
+		OSWriteEEPromWord((unsigned int *)EA_DEFAULT_SAVE, 0xABCD);
 	}
 	else
 	{
