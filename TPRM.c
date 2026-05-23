@@ -377,86 +377,7 @@ void SetDefault(void)
 {	
 	if(eeprom_read_word((unsigned int *)EA_DEFAULT_SAVE)!=0xABCD)
 	{
-		OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~27007);	//10623 //2429
-		//OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~10623);	//10623 //2429
-		//OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~27000);	//10623 //2429
-		
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_READING_AVERAGE, 20);
-		//OSWriteEEPromWord((unsigned int *)EA_PRES_READING_AVERAGE, 20);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_SENS_TYPE, PRES_SENS_SM9543);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_SENS_TYPE, PRES_SENS_SM9543);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_SENS_TYPE, PRES_SENS_SM9543);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH_SENS_TYPE, TEMP_RH_SENS_SHT25);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_RH2_SENS_TYPE, TEMP_RH_SENS_SHT25);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_UNIT, PRESSURE_PA);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_UNIT, PRESSURE_PA);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_UNIT, PRESSURE_PA);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMPERATURE_UNIT, TEMPERATURE_DEG_C);
-		//OSWriteEEPromWord((unsigned int *)EA_HUMIDITY_UNIT, HUMIDITY_RH);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DISPLAY_MODE, DISP_MODE_ALL_PARA);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_RANGE, 1220);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_RANGE, 1220);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_RANGE, 1220);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DEVICE_ID, 1);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_ZERO_ADJ, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_ZERO_ADJ, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_ZERO_ADJ, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_ZERO_ADJ, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP2_ZERO_ADJ, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_ZERO_ADJ, 0);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_AREA_TYPE, PRES_AREA_SQUARE);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_ALARM_SETUP, ALARM_DISABLED);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+327);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_UPPER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)+311);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_OFF_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-163);
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_LOWER_ALARM_ON_LIMIT, (DP1_SENSOR_RESOLUTION_SM9543/2)-147);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_AREA_TYPE, PRES_AREA_SQUARE);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_ALARM_SETUP, ALARM_DISABLED);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+327);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_UPPER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)+311);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_OFF_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-163);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_LOWER_ALARM_ON_LIMIT, (DP2_SENSOR_RESOLUTION_SM9543/2)-147);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_AREA_TYPE, PRES_AREA_SQUARE);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_ALARM_SETUP, ALARM_DISABLED);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+327);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_UPPER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)+311);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_OFF_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-163);
-		//OSWriteEEPromWord((unsigned int *)EA_DP3_LOWER_ALARM_ON_LIMIT, (DP3_SENSOR_RESOLUTION_SM9543/2)-147);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_ALARM_SETUP, ALARM_DISABLED);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_ON_LIMIT, 2510);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_UPPER_ALARM_OFF_LIMIT, 2500);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_OFF_LIMIT, 2110);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_LOWER_ALARM_ON_LIMIT, 2100);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_FIRE_ALM_SET, 7500);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_RH_ALARM_SETUP, ALARM_DISABLED);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_ON_LIMIT, 6010);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_UPPER_ALARM_OFF_LIMIT, 6000);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_OFF_LIMIT, 5010);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_LOWER_ALARM_ON_LIMIT, 5000);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_DP1_OUTPUT_TYPE, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_DP2_OUTPUT_TYPE, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_TEMP_OUTPUT_TYPE, 0);
-		//OSWriteEEPromWord((unsigned int *)EA_RH_OUTPUT_TYPE, 0);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_RTC_SETUP, RTC_DISABLED);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_ON_TIME, 1);
-		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_OFF_TIME, 5);
-		//OSWriteEEPromWord((unsigned int *)EA_BUZZER_DISABLE_TIME, 600);
-		
-		//OSWriteEEPromWord((unsigned int *)EA_SERIAL_BAUD_RATE_VAL, SERIAL_BAUD_57600);
-		//OSWriteEEPromWord((unsigned int *)EA_SERIAL_DATA_STOP_PARITY_VAL, (3<<SERIAL_DATA_BITS_SHIFT) | (0<<SERIAL_STOP_BIT_SHIFT) | (SERIAL_PARITY_NONE << SERIAL_PARITY_SHIFT));
+		OSWriteEEPromWord((unsigned int *)EA_CONFIG_SYSTEM, ~10623);	//27007 //10623 //2429
 
 		memset(&gu8_inOutput[0][0],0,160);
 		//Input ----------------------------------
@@ -491,89 +412,36 @@ void SetDefault(void)
 
 int main(void)                 // Main runs under the AvrX Stack
 {
-	//// software reset ?
-	//if( RST.STATUS & RST_SRF_bm )
-	//{
-		//opstr("Software reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_SRF_bm;
-	//}
-	//// power on reset ?
-	//else if( RST.STATUS & RST_PORF_bm)
-	//{
-		//opstr("Power on reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_PORF_bm;
-	//}
-	//// debugger reset ?
-	//else if( RST.STATUS & RST_PDIRF_bm)
-	//{
-		//opstr("Debugger reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_PDIRF_bm;
-	//}
-	//// external reset ?
-	//else if( RST.STATUS & RST_EXTRF_bm)
-	//{
-		//opstr("External reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_EXTRF_bm;
-	//}
-	//// brown out reset ?
-	//else if( RST.STATUS & RST_BORF_bm)
-	//{
-		//opstr("Brown out reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_BORF_bm;
-	//}
-	//// watch dog reset ?
-	//else if( RST.STATUS & RST_WDRF_bm)
-	//{
-		//opstr("watch dog reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_WDRF_bm;
-	//}
-	//// spike detection reset ?
-	//else if( RST.STATUS & RST_SDRF_bm)
-	//{
-		//opstr("spike detection reset\r");
-		//// reset this bit
-		//RST.STATUS = RST_SDRF_bm;
-	//}
-	//else
-	//{
-		//opstr("Other reset\r");
-	//}
-	
 	//Global Interrupt Disable
-   cli();
+	cli();
 	
-   OSInit(); 
+	OSInit(); 
    
-   InitSystemClock();	
-   DisableUnusedModules();
-   InitGPIO();	
-   Init_InternalRTC();
-   InitLockedPrintf();
+	InitSystemClock();	
    
-   SW_I2C1InterfaceInit();	//PORTC	=> DAC/Display
-   SW_I2C2InterfaceInit();	//PORTD => TempRH/DP1/RTC
-   SW_I2C3InterfaceInit();	//PORTE	=> DP3/PostTemp
-   SW_I2C4InterfaceInit();	//PORTF => DP2/ParticalSensor
+	DisableUnusedModules();
+	InitGPIO();	
+	Init_InternalRTC();
+	InitLockedPrintf();
    
-   InitRTC();
-   SetDefault();
-   if(IsSerialEnabled()) SerialInterfaceInit();
-   DeviceIOInit();
-   PeriodicProcessInit();
-   UserInterfaceInit();
+	SW_I2C1InterfaceInit();	//PORTC	=> DAC/Display
+	SW_I2C2InterfaceInit();	//PORTD => TempRH/DP1/RTC
+	SW_I2C3InterfaceInit();	//PORTE	=> DP3/PostTemp
+	SW_I2C4InterfaceInit();	//PORTF => DP2/ParticalSensor
+   
+	InitRTC();
+	SetDefault();
+	if(IsSerialEnabled()) SerialInterfaceInit();
+	DeviceIOInit();
+	PeriodicProcessInit();
+	UserInterfaceInit();
 
-   PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
-   sei();		//Global Interrupt Enable
+	PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
+	sei();		//Global Interrupt Enable
 
-   OSStart();                   // Start OS switching
+	OSStart();                   // Start OS switching
    
-   while(1);
+	while(1);
 }
 
 

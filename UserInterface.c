@@ -12,6 +12,7 @@
 #include "HardwareInfo.h"
 #include "DeviceIO.h"
 #include "ks0xxx.h"
+#include "Watchdog.h"
 
 //#include "arial_bold_14.h"  //Arial_Bold_14
 //#include "Bitmap.h"       //IMAGE
@@ -37,7 +38,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     108
+#define SOFTWARE_VERSION                     109
 
 #define TRUE 1
 #define FALSE 0
@@ -60,10 +61,10 @@
 #define D_DP2_OUT_HIGH_COUNT				3604     
 #define D_DP3_OUT_LOW_COUNT					0
 #define D_DP3_OUT_HIGH_COUNT				3604        
-#define D_TEMP_OUT_LOW_COUNT                0              
-#define D_TEMP_OUT_HIGH_COUNT               3604             
-#define D_RH_OUT_LOW_COUNT                  0              
-#define D_RH_OUT_HIGH_COUNT                 3604  
+#define D_TEMP_OUT_LOW_COUNT                0
+#define D_TEMP_OUT_HIGH_COUNT               3604
+#define D_RH_OUT_LOW_COUNT                  0
+#define D_RH_OUT_HIGH_COUNT                 3604
            
 #define D_DP1_UNIT						PRESSURE_PA     
 #define D_DP2_UNIT						PRESSURE_PA     
@@ -192,8 +193,8 @@
 #define MAX_DATE_YEAR                         99
 #define MAX_DATE_MONTH                        12
 #define MAX_DATE_DAY                          31
-#define MAX_DP1_OUT_HIGH_COUNT           4095
-#define MAX_DP2_OUT_HIGH_COUNT          4095
+#define MAX_DP1_OUT_HIGH_COUNT				  4095
+#define MAX_DP2_OUT_HIGH_COUNT				  4095
 #define MAX_TEMP_OUT_HIGH_COUNT               4095
 #define MAX_RH_OUT_HIGH_COUNT                 4095
 #define MAX_LOGGING_INTERVAL                  32767
@@ -356,7 +357,7 @@
 
 //#define D_DP1_PID_SET_VALUE                      (0)
 //#define D_DP2_PID_SET_VALUE                      (0)
-#define D_TEMP_PID_SET_VALUE                     (2300)
+#define D_TEMP_PID_SET_VALUE                     (2600)
 #define D_RH_PID_SET_VALUE                       (5500)
 
 #define D_DP1_AREA_LEN                           (600) 
@@ -837,27 +838,20 @@ void UserInterfaceTask( void * taskPara )
 {
 	static uint8_t DPautocale=0;
 	
+	wdt_reset();
+	
 	#ifdef OS_AVRX
-	AvrXDelay(&uioSleepTimer, 3000);
+	AvrXDelay(&uioSleepTimer, 2000);
 	#else
-	OSSleep(3000);
+	OSSleep(2000);
 	#endif
 
-	wdt_reset();
 	keybrdIdleTimer = 0;
 	StartDisplaySensorValues();
-	
-	//while(1)
-	//{
-		//PORTA_OUTTGL = _BV(6);
-		//wdt_reset();			//Serve Watchdog Timer
-		//OSSleep(1000);
-	//}
    
 	while (1)
 	{
-		//PORTA_OUTTGL = _BV(6);
-		wdt_reset();			//Serve Watchdog Timer
+		//wdt_reset();			//Serve Watchdog Timer
 	   
 		#ifdef OS_AVRX
 		AvrXDelay(&uioSleepTimer, KEYBOARD_LOOP_TIME);
@@ -1017,9 +1011,6 @@ void UserInterfaceInit()
       systemXLoc = SCREEN_START_X_VAL;
       systemYLoc = SCREEN_START_Y_VAL;
 	  
-	  //BUZZER_ON;
-	  //BUZZER_OFF;
-
       if(IsMasterReset())
       {
          // Print Master Reset
@@ -1877,6 +1868,8 @@ char DisplayDP3(uint8_t error, int16_t value)
 char DisplayTemperature(uint8_t error, int16_t value)
 {
 	char noSystemErrDisp = 0;
+	//uint8_t Temp = IsTemperature2Enabled();
+	
 	if (IsLCDDisplay())
 	{
 		OSSemaTakeEver(UIMutex);
@@ -1886,7 +1879,7 @@ char DisplayTemperature(uint8_t error, int16_t value)
 		{
 			FormatError( error );
 		}
-
+		
 		if(!displayPage)
 		{
 			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)"), formatedUnit);
@@ -1903,7 +1896,7 @@ char DisplayTemperature(uint8_t error, int16_t value)
 		{
 			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)P"), formatedUnit);
 		}
-		//locked_sprintf_P( displayStr, PSTR("TEMP(%S)"), formatedUnit);
+
 		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
 		PrintLineInBox(LEFT,84,160,24,displayStr);
       
@@ -1941,6 +1934,8 @@ char DisplayTemperature2(uint8_t error, int16_t value)
 char DisplayHumidity(uint8_t error, int16_t value)
 {
 	char noSystemErrDisp = 0;
+	//uint8_t Temp = IsTemperature2Enabled();
+	
 	if (IsLCDDisplay())
 	{
 		OSSemaTakeEver(UIMutex);
@@ -1950,24 +1945,63 @@ char DisplayHumidity(uint8_t error, int16_t value)
 		{
 			FormatError( error );
 		}
+		
+		//if(!displayPage)
+		//{
+			//locked_sprintf_P( displayStr, Temp? PSTR("PrRH(%S)"): PSTR("RH(%S)"), formatedUnit);
+		//}
+		//else if(displayPage==1)
+		//{
+			//locked_sprintf_P( displayStr, Temp? PSTR("PrRH(%S)U"): PSTR("RH(%S)U"), formatedUnit);
+		//}
+		//else if(displayPage==2)
+		//{
+			//locked_sprintf_P( displayStr, Temp? PSTR("PrRH(%S)L"): PSTR("RH(%S)L"), formatedUnit);
+		//}
+		//else
+		//{
+			//locked_sprintf_P( displayStr, Temp? PSTR("PrRH(%S)P"): PSTR("RH(%S)P"), formatedUnit);
+		//}
 
-		if(!displayPage)
-		{
-			locked_sprintf_P( displayStr, PSTR("PrRH(%S)"), formatedUnit);
-		}
-		else if(displayPage==1)
-		{
-			locked_sprintf_P( displayStr, PSTR("PrRH(%S)U"), formatedUnit);
-		}
-		else if(displayPage==2)
-		{
-			locked_sprintf_P( displayStr, PSTR("PrRH(%S)L"), formatedUnit);
-		}
-		else
-		{
-			locked_sprintf_P( displayStr, PSTR("PrRH(%S)P"), formatedUnit);
-		}
-		//locked_sprintf_P( displayStr, PSTR("RH(%S)"), formatedUnit);
+		//if(IsTemperature2Enabled())
+		//{
+			//if(!displayPage)
+			//{
+				//locked_sprintf_P( displayStr, PSTR("RH(%S)"), formatedUnit);
+			//}
+			//else if(displayPage==1)
+			//{
+				//locked_sprintf_P( displayStr, PSTR("RH(%S)U"), formatedUnit);
+			//}
+			//else if(displayPage==2)
+			//{
+				//locked_sprintf_P( displayStr, PSTR("RH(%S)L"), formatedUnit);
+			//}
+			//else
+			//{
+				//locked_sprintf_P( displayStr, PSTR("RH(%S)P"), formatedUnit);
+			//}
+		//}
+		//else
+		//{
+			if(!displayPage)
+			{
+				locked_sprintf_P( displayStr, PSTR("PrRH(%S)"), formatedUnit);
+			}
+			else if(displayPage==1)
+			{
+				locked_sprintf_P( displayStr, PSTR("PrRH(%S)U"), formatedUnit);
+			}
+			else if(displayPage==2)
+			{
+				locked_sprintf_P( displayStr, PSTR("PrRH(%S)L"), formatedUnit);
+			}
+			else
+			{
+				locked_sprintf_P( displayStr, PSTR("PrRH(%S)P"), formatedUnit);
+			}
+		//}
+
 		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
 		PrintLineInBox(LEFT,84,160,64,displayStr);
 
@@ -1985,14 +2019,14 @@ int16_t DP1sensorResolution(void)
 {
 	return DP1_SENSOR_RESOLUTION_SM9543;
 	
-	if(GetParameterValue(DP1_SENS_TYPE)==PRES_SENS_SM9543)
-	{
-		return DP1_SENSOR_RESOLUTION_SM9543;
-	}
-	else
-	{
-		return DP1_SENSOR_RESOLUTION_OTHER;
-	}
+	//if(GetParameterValue(DP1_SENS_TYPE)==PRES_SENS_SM9543)
+	//{
+		//return DP1_SENSOR_RESOLUTION_SM9543;
+	//}
+	//else
+	//{
+		//return DP1_SENSOR_RESOLUTION_OTHER;
+	//}
 	
 	//int16_t dpresolution;
 	//
@@ -2012,14 +2046,14 @@ int16_t DP2sensorResolution(void)
 {
 	return DP2_SENSOR_RESOLUTION_SM9543;
 	
-	if(GetParameterValue(DP2_SENS_TYPE)==PRES_SENS_SM9543)
-	{
-		return DP2_SENSOR_RESOLUTION_SM9543;
-	}
-	else
-	{
-		return DP2_SENSOR_RESOLUTION_OTHER;
-	}
+	//if(GetParameterValue(DP2_SENS_TYPE)==PRES_SENS_SM9543)
+	//{
+		//return DP2_SENSOR_RESOLUTION_SM9543;
+	//}
+	//else
+	//{
+		//return DP2_SENSOR_RESOLUTION_OTHER;
+	//}
 	
 	//int16_t dpresolution;
 	//
@@ -5826,12 +5860,12 @@ int min_diff_pres3_zero_adj()
                 
 int min_temp_zero_adj()                     
 {  
-   return -1000;
+   return -2000;
 }
                 
 int min_rh_zero_adj()                       
 {  
-   return -1600;
+   return -2000;
 }
                 
 
@@ -5952,12 +5986,12 @@ int max_diff_pres3_zero_adj()
                 
 int max_temp_zero_adj()                     
 {  
-   return 1000;
+   return 2000;
 }
                 
 int max_rh_zero_adj()                       
 {  
-   return 1600;
+   return 2000;
 }
                 
 

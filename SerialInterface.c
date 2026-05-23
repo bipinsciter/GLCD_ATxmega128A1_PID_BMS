@@ -150,8 +150,6 @@ ISR(RTC_OVF_vect)
 			rxMode=0;
 			rxDataLen=0;
 			RTC.CTRL = 0;  // disable RTC timer
-			
-			//PORTA_OUTSET = _BV(4);
 		}
 	}
 }
@@ -166,36 +164,9 @@ void SerialInterfaceTask( void * taskPara )
 	uint8_t ch, i = 0, crcVal;
 	int16_t tempshort = 0;
 	
-	//while(1)
-	//{
-		//PORTA_OUTTGL = _BV(5);
-		//wdt_reset();			//Serve Watchdog Timer
-		//OSSleep(1000);
-	//}
-	
-	
-	//rxDataBuffer[0]=0x01;
-	//rxDataBuffer[1]=0x11;
-	//rxDataBuffer[2]=0xA6;
-	//rxDataBuffer[3]='A';
-	//rxDataBuffer[4]='B';
-	//rxDataBuffer[5]='C';
-	//rxDataBuffer[6]='D';
-	//rxDataBuffer[7]='E';
-	//rxDataBuffer[8]='F';
-	//rxDataBuffer[9]='G';
-	//rxDataBuffer[10]='H';
-	//rxDataLen=11;
-	//cmdId=0x11;	
-	//msgRcvd=1;
-	
-	//SetParameterStr(IP1_NAME, (uint8_t*)&rxDataBuffer[3]);
-	//GetParameterStr(IP1_NAME, (uint8_t*)&txDataBuffer[3]);
-	
 	while (1)
 	{		
-		//PORTA_OUTTGL = _BV(5);
-		wdt_reset();			//Serve Watchdog Timer
+		//wdt_reset();			//Serve Watchdog Timer
 		
 		#ifndef OS_AVRX
 		if((vUSARTC0_RxQueue != NULL) && xQueueReceive( vUSARTC0_RxQueue, &ch, (TickType_t) 5 ) )

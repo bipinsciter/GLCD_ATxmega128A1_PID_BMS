@@ -33,16 +33,8 @@ void PERIODIC_FUNC_NAME( void * taskPara )
 	buzzerTimeCounter = 0;
 	buzzerDisableTime = GetParameterValue( BUZZER_DISABLE_TIME );
 
-	//while(1)
-	//{
-		//PORTA_OUTTGL = _BV(4);
-		//wdt_reset();			//Serve Watchdog Timer
-		//OSSleep(1000);
-	//}
-   
 	while (1)
 	{
-		//PORTA_OUTTGL = _BV(4);
 		wdt_reset();			//Serve Watchdog Timer
 	   
 		DisplaySensorValues();

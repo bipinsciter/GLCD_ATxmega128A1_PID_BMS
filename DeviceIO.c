@@ -13,7 +13,7 @@
 #include "PressureSens.h"
 #include "eepromAdr.h"
 //#include "ParticalSenser_IPS7100.h"
-#include "ParticalSenser_SEN55.h"
+//#include "ParticalSenser_SEN55.h"
 
 #define TRUE  1
 #define FALSE 0
@@ -123,23 +123,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 	LED_HUM_OK_DIR_OUT;
 	LED_HUM_ALM_DIR_OUT;
 	
-	//LED_ABD_PRES_OK_ON;
-	//LED_ABD_PRES_OK_OFF;
-	//LED_ABD_PRES_ALM_ON;
-	//LED_ABD_PRES_ALM_OFF;
-	//LED_DP2_OK_ON;
-	//LED_DP2_OK_OFF;
-	//LED_DP2_ALM_ON;
-	//LED_DP2_ALM_OFF;
-	//LED_TEMP_OK_ON;
-	//LED_TEMP_OK_OFF;
-	//LED_TEMP_ALM_ON;
-	//LED_TEMP_ALM_OFF;
-	//LED_HUM_OK_ON;
-	//LED_HUM_OK_OFF;
-	//LED_HUM_ALM_ON;
-	//LED_HUM_ALM_OFF;
-	
 	OUTPUT_PORT_DIR = 0xFF;  // As outputs 
 	
 	uint16_t Output;
@@ -159,13 +142,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 	INPUT_PORT_DIR = 0xE0;  // As inputs
 	INPUT_PORT = 0xFF;      // Pullups on
 	
-	//while(1)
-	//{
-		//PORTA_OUTTGL = _BV(0);
-		//wdt_reset();			//Serve Watchdog Timer
-		//OSSleep(1000);
-	//}
-	
 	// Kalman filter for pressure
 	Kalman_Init(&Kalmanfilter[DP1_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 	Kalman_Init(&Kalmanfilter[DP2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
@@ -173,9 +149,8 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 
 	while (1)
 	{
-		//PORTA_OUTTGL = _BV(0);
-		wdt_reset();			//Serve Watchdog Timer
-	   
+		//wdt_reset();			//Serve Watchdog Timer
+	    
 		systemError = ERROR_OK;
 
 		if (IsDP1Enabled())
@@ -832,46 +807,15 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 	uint8_t retVal = -1, checkSum;
 	unsigned int value, value1;
 	int convertedValue;
-	
-	//if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
-	//{
-		//ResetSensorSHT35(0);
-		//
-		//#ifdef OS_AVRX
-		//AvrXDelay(&tempLoopSleepTimer, 2000);
-		//#else
-		//OSSleep(2000);
-		//#endif
-		//
-		//StartSensorSHT35(0);
-	//}
-	//
-	//if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
-	//{
-		//ResetSensorSHT35(1);
-		//
-		//#ifdef OS_AVRX
-		//AvrXDelay(&tempLoopSleepTimer, 2000);
-		//#else
-		//OSSleep(2000);
-		//#endif
-		//
-		//StartSensorSHT35(1);
-	//}
    
+    wdt_reset();			//Serve Watchdog Timer
+	
 	#ifdef OS_AVRX
-	AvrXDelay(&tempLoopSleepTimer, 3000);
+	AvrXDelay(&tempLoopSleepTimer, 2000);
 	#else
-	OSSleep(3000);
+	OSSleep(2000);
 	#endif
 
-	//while(1)
-	//{
-		//PORTA_OUTTGL = _BV(2);
-		//wdt_reset();			//Serve Watchdog Timer
-		//OSSleep(1000);
-	//}
-	
 	Kalman_Init(&Kalmanfilter[TEMPERATURE_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 	Kalman_Init(&Kalmanfilter[HUMIDITY_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 	Kalman_Init(&Kalmanfilter[TEMPERATURE2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
@@ -879,11 +823,9 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
  
 	while (1)
 	{
-		//PORTA_OUTTGL = _BV(2);
-		wdt_reset();			//Serve Watchdog Timer
+		//wdt_reset();			//Serve Watchdog Timer
 	    	
 		if(CurrentDoorStatus()==OPEN)
-		//if(INPUT1_SENSE==CLOSE)
 		{
 			alarmOut.alarm.door=1;
 		}
@@ -1145,165 +1087,8 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 	}
 }
 
-//#ifdef OS_AVRX
-//TimerControlBlock tempLoopSleepTimer;
-//AVRX_GCC_TASKDEF(PARTSENS_FUNC_NAME, PARTSENS_STACK_SIZE, PARTSENS_PRIORITY)
-//#else
-//void PARTSENS_FUNC_NAME( void * taskPara );
-//void PARTSENS_FUNC_NAME( void * taskPara )
-//#endif
-//{
-	////if(GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_SEN55)
-	//{
-		//sen5x_reset_device(SENSOR_1);
-		//sen5x_reset_device(SENSOR_2);
-		//
-		//#ifdef OS_AVRX
-		//AvrXDelay(&tempLoopSleepTimer, 1000);
-		//#else
-		//OSSleep(1000);
-		//#endif
-		//
-		//sen5x_start_measurement(SENSOR_1);
-		//sen5x_start_measurement(SENSOR_2);
-		//
-		//#ifdef OS_AVRX
-		//AvrXDelay(&tempLoopSleepTimer, 1000);
-		//#else
-		//OSSleep(1000);
-		//#endif
-	//}
-	////else if((GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_ISP7100) || (GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_ISP5100))
-	////{
-	////ips7100_reset_device(SENSOR_1);
-	////ips7100_reset_device(SENSOR_2);
-	////
-	////#ifdef OS_AVRX
-	////AvrXDelay(&tempLoopSleepTimer, 5000);
-	////#else
-	////OSSleep(5000);
-	////#endif
-	////}
-	//
-	////while(1)
-	////{
-	////PORTA_OUTTGL = _BV(3);
-	////wdt_reset();			//Serve Watchdog Timer
-	////OSSleep(1000);
-	////}
-	//
-	////sen5x_start_fan_manually(SENSOR_1);
-//
-	//while (1)
-	//{
-		////PORTA_OUTTGL = _BV(3);
-		//wdt_reset();			//Serve Watchdog Timer
-		//
-		////if(GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_SEN55)
-		//{
-			//if(sen5x_check_meaurement_ready(SENSOR_1) == ERROR_OK)
-			//{
-				//if (sen5x_read_measured_value(SENSOR_1,&sen55_1) == ERROR_OK)
-				//{
-					////sen55_1.temperature += GetParameterValue(TEMP_ZERO_ADJ);
-					////sen55_1.humidity += GetParameterValue(RH_ZERO_ADJ);
-					////sen55_1.temperature /= 2;
-					//
-					//sen55_1.error = ERROR_OK;
-				//}
-				//else
-				//{
-					//sen55_1.error = ERROR_PARTICAL_SENS_I2C;
-				//}
-			//}
-			//
-			////if(sen5x_check_meaurement_ready(SENSOR_2)==ERROR_OK)
-			////{
-				////if (sen5x_read_measured_value(SENSOR_2,&sen55_2) == ERROR_OK)
-				////{
-					////sen55_2.temperature += GetParameterValue(TEMP_ZERO_ADJ);
-					////sen55_2.humidity += GetParameterValue(RH_ZERO_ADJ);
-					////
-					////sen55_2.temperature /= 2;
-					////
-					////sen55_2.error = ERROR_OK;
-				////}
-				////else
-				////{
-					////sen55_2.error = ERROR_PARTICAL_SENS_I2C;
-				////}
-			////}
-		//}
-		////else if((GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_ISP7100) || (GetParameterValue(PARTICAL_SENS_TYPE) == PARTCAL_SENS_ISP5100))
-		////{
-		//////Sensor 1 ----------------------------------------------------------------------------
-		////if(ips7100_read_pc_value(SENSOR_1,&isp7100_pc_1) == ERROR_OK)
-		////{
-		////
-		////}
-		////else
-		////{
-		////isp7100_pc_1.error = ERROR_PARTICAL_SENS_I2C;
-		////}
-		////
-		////if(ips7100_read_pm_value(SENSOR_1,&isp7100_pm_1) == ERROR_OK)
-		////{
-		////
-		////}
-		////else
-		////{
-		////isp7100_pm_1.error = ERROR_PARTICAL_SENS_I2C;
-		////}
-		////
-		//////Sensor 2 ----------------------------------------------------------------------------
-		////if(ips7100_read_pc_value(SENSOR_2,&isp7100_pc_2) == ERROR_OK)
-		////{
-		////
-		////}
-		////else
-		////{
-		////isp7100_pc_2.error = ERROR_PARTICAL_SENS_I2C;
-		////}
-		////
-		////if(ips7100_read_pm_value(SENSOR_2,&isp7100_pm_2) == ERROR_OK)
-		////{
-		////
-		////}
-		////else
-		////{
-		////isp7100_pm_2.error = ERROR_PARTICAL_SENS_I2C;
-		////}
-		////}
-		//
-		//#ifdef OS_AVRX
-		////AvrXDelay(&tempLoopSleepTimer, GetParameterValue(TEMP_RH_SCAN_TIME) * 1000);
-		//#else
-		////OSSleep(GetParameterValue(TEMP_RH_SCAN_TIME) * 1000);
-		//OSSleep(1000);
-		//#endif
-	//}
-//}
-
-
-//static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
-//static long sampleSum[TOTAL_VAL_INDEX] = {0};
-//static int sampleBuf[TOTAL_VAL_INDEX][30] = {0};
-//static char BufPtr[TOTAL_VAL_INDEX] = {0};
-//static int LastconvertedVal[TOTAL_VAL_INDEX] = {0};
 static void AveragePara( uint8_t SenNo, uint8_t error, unsigned int rawVal, int convertedVal )
 {
-	//if( AverageSamples[SenNo] != NoofSample)
-	//{
-		//AverageSamples[SenNo] = NoofSample;
-//
-		//// Kalman filter for pressure
-		//Kalman_Init(&Kalmanfilter[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
-	//}
-	//else
-	//{
-		//convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
-	//}
-	
 	convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
 	OSSemaTakeEver(DeviceValueMutex);
 	sensorVal[SenNo].errorCode = error;

@@ -5,6 +5,11 @@
 #include "error.h"
 #include "pid.h"
 
+#define DAC_CNT_RANGE	4095
+#define DAC_CNT_RANGE_L	4095l
+#define DAC_CNT_RANGE_F	4095.0
+#define PID_MAX_VOLT	10
+
 static int pidThreadReset = 0;
 
 static int tempPIDKp = 0;
@@ -78,17 +83,17 @@ void PIDLoopControl()
        rhPIDTi = GetParameterValue(RH_PID_TI);
        
 	   error = GetParameterValue(DP1_PID_STARTUP_PERCENT); // % with One decimal
-	   absPresSum = 4095.0 * error * absPresPIDTi / absPresPIDKp / 100;
-	   absPresSumLimit = 4095.0 * 10 * absPresPIDTi / absPresPIDKp;
+	   absPresSum = DAC_CNT_RANGE_F * error * absPresPIDTi / absPresPIDKp / 100;
+	   absPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * absPresPIDTi / absPresPIDKp;
 	   error = GetParameterValue(DP2_PID_STARTUP_PERCENT); // % with One decimal
-	   diffPresSum = 4095.0 * error * diffPresPIDTi / diffPresPIDKp / 100;
-	   diffPresSumLimit = 4095.0 * 10 * diffPresPIDTi / diffPresPIDKp;
+	   diffPresSum = DAC_CNT_RANGE_F * error * diffPresPIDTi / diffPresPIDKp / 100;
+	   diffPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * diffPresPIDTi / diffPresPIDKp;
 	   error = GetParameterValue(TEMP_PID_STARTUP_PERCENT); // % with One decimal
-	   tempSum = 4095.0 * error * tempPIDTi / tempPIDKp / 100;
-	   tempSumLimit = 4095.0 * 10 * tempPIDTi / tempPIDKp;
+	   tempSum = DAC_CNT_RANGE_F * error * tempPIDTi / tempPIDKp / 100;
+	   tempSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * tempPIDTi / tempPIDKp;
 	   error = GetParameterValue(RH_PID_STARTUP_PERCENT); // % with One decimal
-	   rhSum = 4095.0 * error * rhPIDTi / rhPIDKp / 100;
-	   rhSumLimit = 4095.0 * 10 * rhPIDTi / rhPIDKp;
+	   rhSum = DAC_CNT_RANGE_F * error * rhPIDTi / rhPIDKp / 100;
+	   rhSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * rhPIDTi / rhPIDKp;
 
        pidThreadReset = 1;
 	}
@@ -97,19 +102,19 @@ void PIDLoopControl()
 	{ 
 	    // load and check for change of Kp, Ki and Kd parameters
 		// Calculate I sum limits
-	    // 4095 = PIDKp * Sum / (10 * PIdTi)
-	    // Sum = 4096 * 10 * PidTi / PIDKp
+	    // DAC_CNT_RANGE = PIDKp * Sum / (10 * PIdTi)
+	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
         if( tempPIDKp != GetParameterValue(TEMP_PID_KP))
 		{
 		   tempSum = (float)tempSum * tempPIDKp / GetParameterValue(TEMP_PID_KP);
 		   tempPIDKp = GetParameterValue(TEMP_PID_KP);
-		   tempSumLimit = 4095l * 10 * tempPIDTi / tempPIDKp;  
+		   tempSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * tempPIDTi / tempPIDKp;  
 		}
         if( tempPIDTi != GetParameterValue(TEMP_PID_TI))
 		{
 		   tempSum = (float)tempSum * GetParameterValue(TEMP_PID_TI) / tempPIDTi;
 		   tempPIDTi = GetParameterValue(TEMP_PID_TI);
-         tempSumLimit = 4095l * 10 * tempPIDTi / tempPIDKp;  
+         tempSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * tempPIDTi / tempPIDKp;  
 		}
 		tempPIDTd = GetParameterValue(TEMP_PID_TD);
 
@@ -174,27 +179,27 @@ void PIDLoopControl()
 				   }
                 }
     		    tempSum = tempSumLimit;
-	    	    tempPIDOutput = 4095;
+	    	    tempPIDOutput = DAC_CNT_RANGE;
             }
             else
 			{  // Divide by 100 is because of temprature unit
 	    	   tempPIDOutput = (long)tempPIDKp * (error + (long)tempPIDTd*deltaError/100 + (tempSum * 10 /tempPIDTi))/100;
 	    	   if( tempPIDOutput < 0 )
 	    	      tempPIDOutput = 0;
-	    	   if( tempPIDOutput > 4095 )
-	    		  tempPIDOutput = 4095;
+	    	   if( tempPIDOutput > DAC_CNT_RANGE )
+	    		  tempPIDOutput = DAC_CNT_RANGE;
 			}
         }
         else
             tempPIDOutput = 0;
 
-        tempPIDOutputPercent = tempPIDOutput * 1000l / 4095;
+        tempPIDOutputPercent = tempPIDOutput * 1000l / DAC_CNT_RANGE;
 
 	    if( ! GetParameterValue(TEMP_OUT_POLARITY))
-			tempPIDOutput = 4095 - tempPIDOutput;
+			tempPIDOutput = DAC_CNT_RANGE - tempPIDOutput;
 
         // Convert to output counts
-        tempPIDOutputCount = GetParameterValue(TEMP_OUT_LOW_COUNT) + (long)tempPIDOutput * (GetParameterValue(TEMP_OUT_HIGH_COUNT) - GetParameterValue(TEMP_OUT_LOW_COUNT)) / 4096l;
+        tempPIDOutputCount = GetParameterValue(TEMP_OUT_LOW_COUNT) + (long)tempPIDOutput * (GetParameterValue(TEMP_OUT_HIGH_COUNT) - GetParameterValue(TEMP_OUT_LOW_COUNT)) / DAC_CNT_RANGE_L;
         // Write to DAC
 		error = DACWriteOutValue( TEMP_ANALOG_OUT, tempPIDOutputCount );
         if( error != ERROR_OK )
@@ -208,19 +213,19 @@ void PIDLoopControl()
 	{ 
 	    // load and check for change of Kp, Ki and Kd parameters
 		// Calculate I sum limits
-	    // 4095 = PIDKp * Sum / (10 * PIdTi)
-	    // Sum = 4096 * 10 * PidTi / PIDKp
+	    // DAC_CNT_RANGE = PIDKp * Sum / (10 * PIdTi)
+	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
         if( rhPIDKp != GetParameterValue(RH_PID_KP))
 		{
 			rhSum = (float)rhSum * rhPIDKp / GetParameterValue(RH_PID_KP);
 		    rhPIDKp = GetParameterValue(RH_PID_KP);
-		    rhSumLimit = 4095l * 10 * rhPIDTi / rhPIDKp;  
+		    rhSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * rhPIDTi / rhPIDKp;  
 		}
         if( rhPIDTi != GetParameterValue(RH_PID_TI))
 		{
  		   rhSum = (float)rhSum * GetParameterValue(RH_PID_TI) / rhPIDTi;
 	       rhPIDTi = GetParameterValue(RH_PID_TI);
-		    rhSumLimit = 4095l * 10 * rhPIDTi / rhPIDKp;  
+		    rhSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * rhPIDTi / rhPIDKp;  
 		}
 		rhPIDTd = GetParameterValue(RH_PID_TD);
 
@@ -285,27 +290,27 @@ void PIDLoopControl()
 				   }
                 }
     		    rhSum = rhSumLimit;
-			    rhPIDOutput = 4095;
+			    rhPIDOutput = DAC_CNT_RANGE;
 			}
             else
 			{
                 rhPIDOutput = (long)rhPIDKp * (error + (long)rhPIDTd*deltaError/100 + (rhSum * 10 /rhPIDTi))/100;
                 if( rhPIDOutput < 0 )
                     rhPIDOutput = 0;
-                if( rhPIDOutput > 4095 )
-                    rhPIDOutput = 4095;
+                if( rhPIDOutput > DAC_CNT_RANGE )
+                    rhPIDOutput = DAC_CNT_RANGE;
             }
         }
         else
             rhPIDOutput = 0;
 
-        rhPIDOutputPercent = rhPIDOutput * 1000l / 4095;
+        rhPIDOutputPercent = rhPIDOutput * 1000l / DAC_CNT_RANGE;
 
 	    if( ! GetParameterValue(RH_OUT_POLARITY))
-			rhPIDOutput = 4095 - rhPIDOutput;
+			rhPIDOutput = DAC_CNT_RANGE - rhPIDOutput;
 
         // Convert to output counts
-        rhPIDOutputCount = GetParameterValue(RH_OUT_LOW_COUNT) + (long)rhPIDOutput * (GetParameterValue(RH_OUT_HIGH_COUNT) - GetParameterValue(RH_OUT_LOW_COUNT)) / 4096l;
+        rhPIDOutputCount = GetParameterValue(RH_OUT_LOW_COUNT) + (long)rhPIDOutput * (GetParameterValue(RH_OUT_HIGH_COUNT) - GetParameterValue(RH_OUT_LOW_COUNT)) / DAC_CNT_RANGE_L;
         // Write to DAC
  		  error = DACWriteOutValue( RH_ANALOG_OUT, rhPIDOutputCount );
         if( error != ERROR_OK )
@@ -320,19 +325,19 @@ void PIDLoopControl()
 	 { 
 	    // load and check for change of Kp, Ki and Kd parameters
 	    // Calculate I sum limits
-	    // 4095 = PIDKp * Sum / (10 * PIdTi)
-	    // Sum = 4096 * 10 * PidTi / PIDKp
+	    // DAC_CNT_RANGE = PIDKp * Sum / (10 * PIdTi)
+	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
       if( diffPresPIDKp != GetParameterValue(DP2_PID_KP))
 		{
 			diffPresSum = (float)diffPresSum * diffPresPIDKp / GetParameterValue(DP2_PID_KP);
 		    diffPresPIDKp = GetParameterValue(DP2_PID_KP);
-		    diffPresSumLimit = 4095l * 10 * diffPresPIDTi / diffPresPIDKp;  
+		    diffPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * diffPresPIDTi / diffPresPIDKp;  
 		}
       if( diffPresPIDTi != GetParameterValue(DP2_PID_TI))
 		{
 			diffPresSum = (float)diffPresSum * GetParameterValue(DP2_PID_TI) / diffPresPIDTi ;
 		    diffPresPIDTi = GetParameterValue(DP2_PID_TI);
-		    diffPresSumLimit = 4095l * 10 * diffPresPIDTi / diffPresPIDKp;  
+		    diffPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * diffPresPIDTi / diffPresPIDKp;  
 		}
 		diffPresPIDTd = GetParameterValue(DP2_PID_TD);
 
@@ -355,20 +360,20 @@ void PIDLoopControl()
     		diffPresLastError = error;
     	    if( diffPresPIDOutput < 0 )
     		   diffPresPIDOutput = 0;
-    	    if( diffPresPIDOutput > 4095 )
-    		   diffPresPIDOutput = 4095;
+    	    if( diffPresPIDOutput > DAC_CNT_RANGE )
+    		   diffPresPIDOutput = DAC_CNT_RANGE;
 
         }
         else
             diffPresPIDOutput = 0;
 
-        diffPresPIDOutputPercent = diffPresPIDOutput * 1000l / 4095;
+        diffPresPIDOutputPercent = diffPresPIDOutput * 1000l / DAC_CNT_RANGE;
 
 		if( ! GetParameterValue(DP2_OUT_POLARITY))
-            diffPresPIDOutput = 4095 - diffPresPIDOutput;
+            diffPresPIDOutput = DAC_CNT_RANGE - diffPresPIDOutput;
 
         // Convert to output counts
-        diffPresPIDOutputCount = GetParameterValue(DP2_OUT_LOW_COUNT) + (long)diffPresPIDOutput * (GetParameterValue(DP2_OUT_HIGH_COUNT) - GetParameterValue(DP2_OUT_LOW_COUNT)) / 4096l;
+        diffPresPIDOutputCount = GetParameterValue(DP2_OUT_LOW_COUNT) + (long)diffPresPIDOutput * (GetParameterValue(DP2_OUT_HIGH_COUNT) - GetParameterValue(DP2_OUT_LOW_COUNT)) / DAC_CNT_RANGE_L;
         // Write to DAC
         error = DACWriteOutValue( DP2_ANALOG_OUT, diffPresPIDOutputCount );
         if( error != ERROR_OK )
@@ -378,19 +383,19 @@ void PIDLoopControl()
 	{ 
 	    // load and check for change of Kp, Ki and Kd parameters
 		// Calculate I sum limits
-	    // 4095 = PIDKp * Sum / (10 * PIdTi)
-	    // Sum = 4096 * 10 * PidTi / PIDKp
+	    // DAC_CNT_RANGE = PIDKp * Sum / (10 * PIdTi)
+	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
         if( absPresPIDKp != GetParameterValue(DP1_PID_KP))
 		{
 		   absPresSum = absPresSum * absPresPIDKp / GetParameterValue(DP1_PID_KP);
 		   absPresPIDKp = GetParameterValue(DP1_PID_KP);
-	       absPresSumLimit = 4095l * 10 * absPresPIDTi / absPresPIDKp;  
+	       absPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * absPresPIDTi / absPresPIDKp;  
 		}
         if( absPresPIDTi != GetParameterValue(DP1_PID_TI))
 		{
 		   absPresSum = absPresSum * GetParameterValue(DP1_PID_TI) / absPresPIDTi;
 		   absPresPIDTi = GetParameterValue(DP1_PID_TI);
-	       absPresSumLimit = 4095l * 10 * absPresPIDTi / absPresPIDKp;  
+	       absPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * absPresPIDTi / absPresPIDKp;  
 		}
 		absPresPIDTd = GetParameterValue(DP1_PID_TD);
 
@@ -413,19 +418,19 @@ void PIDLoopControl()
     		absPresLastError = error;
     	    if( absPresPIDOutput < 0 )
     		   absPresPIDOutput = 0;
-    	    if( absPresPIDOutput > 4095 )
-    		   absPresPIDOutput = 4095;
+    	    if( absPresPIDOutput > DAC_CNT_RANGE )
+    		   absPresPIDOutput = DAC_CNT_RANGE;
        }
        else
           absPresPIDOutput = 0;
 
-       absPresPIDOutputPercent = absPresPIDOutput * 1000l / 4095;
+       absPresPIDOutputPercent = absPresPIDOutput * 1000l / DAC_CNT_RANGE;
 
 	   if( ! GetParameterValue(DP1_OUT_POLARITY))
-          absPresPIDOutput = 4095 - absPresPIDOutput;
+          absPresPIDOutput = DAC_CNT_RANGE - absPresPIDOutput;
 
        // Convert to output counts
-       absPresPIDOutputCount = GetParameterValue(DP1_OUT_LOW_COUNT) + (long)absPresPIDOutput * (GetParameterValue(DP1_OUT_HIGH_COUNT) - GetParameterValue(DP1_OUT_LOW_COUNT)) / 4096l;
+       absPresPIDOutputCount = GetParameterValue(DP1_OUT_LOW_COUNT) + (long)absPresPIDOutput * (GetParameterValue(DP1_OUT_HIGH_COUNT) - GetParameterValue(DP1_OUT_LOW_COUNT)) / DAC_CNT_RANGE_L;
 
        // Write to DAC
 	   error = DACWriteOutValue( DP1_ANALOG_OUT, absPresPIDOutputCount );
