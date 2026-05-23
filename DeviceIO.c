@@ -1372,7 +1372,7 @@ void DeviceIOInit()
 
 uint8_t CurrentDoorStatus(void)
 {
-	if(!DOOR_SENSE)
+	if(DOOR_SENSE)
 	{
 		return OPEN;
 	}

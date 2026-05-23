@@ -505,10 +505,6 @@ void SerialInterfaceTask( void * taskPara )
 							}
 							else
 							{
-								//locked_sprintf_P( txDataBuffer+2, PSTR("%s"), rxDataBuffer[3] );
-								//SendPacket( READ_PARAMETER, txDataBuffer, strlen(txDataBuffer+2)+8);
-								
-								//memcpy(&txDataBuffer[2],&rxDataBuffer[3],8);
 								memcpy(&txDataBuffer[2],&gu8_inOutput[(uint8_t)rxDataBuffer[2]-IP1_HIGH_NAME][0],8);
 								SendPacket( READ_PARAMETER, txDataBuffer, 10);
 							}
@@ -560,8 +556,9 @@ void SerialInterfaceTask( void * taskPara )
 					  case OP4_HIGH_NAME:
 					  case OP4_LOW_NAME:
 					  
-						  ch = SetParameterStr( (uint8_t)rxDataBuffer[2], (uint8_t*)&rxDataBuffer[3] );
-						  memcpy(&gu8_inOutput[(uint8_t)rxDataBuffer[2]-IP1_HIGH_NAME][0],&rxDataBuffer[3],8);
+						  memset(&gu8_inOutput[(uint8_t)rxDataBuffer[2]-IP1_HIGH_NAME][0],0,10);
+						  memcpy(&gu8_inOutput[(uint8_t)rxDataBuffer[2]-IP1_HIGH_NAME][0],&rxDataBuffer[3],8);					  
+						  ch = SetParameterStr( (uint8_t)rxDataBuffer[2], (uint8_t*)&gu8_inOutput[(uint8_t)rxDataBuffer[2]-IP1_HIGH_NAME][0] );
 						  
 						  txDataBuffer[0] = ch;
 						  txDataBuffer[1] = rxDataBuffer[2];
@@ -571,8 +568,6 @@ void SerialInterfaceTask( void * taskPara )
 						  }
 						  else
 						  {
-							  //locked_sprintf_P( txDataBuffer+2, PSTR("%s"), rxDataBuffer[3] );
-							  //SendPacket( WRITE_PARAMETER, txDataBuffer, strlen(txDataBuffer+2)+8);
 							  memcpy(&txDataBuffer[2],&rxDataBuffer[3],8);
 							  SendPacket( WRITE_PARAMETER, txDataBuffer, 10);
 						  }

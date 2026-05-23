@@ -37,7 +37,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     104
+#define SOFTWARE_VERSION                     105
 
 #define TRUE 1
 #define FALSE 0
@@ -2993,7 +2993,7 @@ uint8_t GetParameterStr( uint8_t paraId, uint8_t *parastr )
 		default:	return ERROR_PARA_INVALID;		break;
 	}
 	
-	OSReadEEPromBlock((uint8_t *)eepromAddr, parastr, 8);
+	OSReadEEPromBlock((uint8_t *)eepromAddr, parastr, 10);
 	
 	return ERROR_OK;
 }
@@ -3047,7 +3047,7 @@ uint8_t SetParameterStr( uint8_t paraId, uint8_t *parastr )
 		default:	return ERROR_PARA_INVALID;		break;
 	}
 	
-	OSWriteEEPromBlock((uint8_t *)eepromAddr, parastr, 8);
+	OSWriteEEPromBlock((uint8_t *)eepromAddr, parastr, 10);
 	
 	return ERROR_OK;
 }
