@@ -37,7 +37,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     106
+#define SOFTWARE_VERSION                     107
 
 #define TRUE 1
 #define FALSE 0
@@ -806,6 +806,8 @@ static char formatedValue[12];
 static const char *formatedUnit;
 //static const char * formatedtype;
 char gu8_inOutput[16][10]={0};
+int PreTd=0,PostTd=0,TDdiff=0;
+uint8_t PreTdErr=0,PostTdErr=0,TDdiffErr=0;
 	
 static char prevKeys, currKeys, keys, keysPressed;
 
@@ -1220,19 +1222,35 @@ static void StartDisplaySensorValues(void)
 	LCDControl = SENSOR_VALUES;
 }
 
-
 void DisplaySensorValues(void)
 {
 	static char noSystemErrDisp = 0;
 	uint8_t errorCode;
-	int value1=0,PreTempvalue=0,PostTempvalue=0,diff=0;
+	int value1=0,PreTempvalue=0,PostTempvalue=0;
 	int PreRHvalue=0,PostRHvalue=0;
-	int PreTd=0,PostTd=0;
+	
 	
 	if (IsLCDDisplay())
 	{
 		if ( LCDControl != SENSOR_VALUES )
 		return;
+		
+		if(u8_resetTimer)
+		{
+			uc1638_FillScreen(BLANK1);
+			ks0xxx_SelectFont(Font_Verdana_10x24, ks0xxx_ReadFontData, BLACK);
+			PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< DFU MODE >");
+			
+			u8_resetTimer--;
+			if(!u8_resetTimer)
+			{
+				//SoftReset ------------------
+				CPU_CCP  = CCP_IOREG_gc;
+				RST.CTRL = RST_SWRST_bm ;
+			}
+
+			return;
+		}
 		
 		ALARMS alarmOut;
 		static uint8_t toggle=0,clear=0;
@@ -1278,23 +1296,6 @@ void DisplaySensorValues(void)
 			}
 		}
 
-		if(u8_resetTimer)
-		{
-			uc1638_FillScreen(BLANK1);
-			ks0xxx_SelectFont(Font_Verdana_10x24, ks0xxx_ReadFontData, BLACK);
-			PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< DFU MODE >");
-			
-			u8_resetTimer--;
-			if(!u8_resetTimer)
-			{
-				//SoftReset ------------------
-				CPU_CCP  = CCP_IOREG_gc;
-				RST.CTRL = RST_SWRST_bm ;
-			}
-
-			return;
-		}
-		
 		if(displayPage1==4)
 		{
 			uc1638_FillScreen(BLANK1);
@@ -1461,9 +1462,11 @@ void DisplaySensorValues(void)
 			if(senVal.errorCode != ERROR_OK)
 			{
 				PrintLineInBox(LEFT,80,166,144,"PrTd:Err");
+				PreTdErr=1;
 			}
 			else
 			{
+				PreTdErr=0;
 				PreTd=findDewPoint(PreTempvalue,PreRHvalue);
 				FormatFloat(PreTd);
 				locked_sprintf_P(displayStr, PSTR("PrTd:%s*C"), formatedValue);
@@ -1479,6 +1482,8 @@ void DisplaySensorValues(void)
 				PrintLineInBox(LEFT,80,166,152,"PoTd:Err");
 				ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);	
 				locked_sprintf_P(displayStr, PSTR("TD:Err"));
+				PostTdErr=1;
+				TDdiffErr=1;
 			}
 			else
 			{
@@ -1495,6 +1500,7 @@ void DisplaySensorValues(void)
 				PrintLineInBox(LEFT,4,80,152,displayStr);
 				
 				PostTd = findDewPoint(PostTempvalue,PostRHvalue);
+				PostTdErr=0;
 				FormatFloat(PostTd);
 				locked_sprintf_P(displayStr, PSTR("PoTd:%s*C"), formatedValue);
 				PrintLineInBox(LEFT,80,166,152,displayStr);
@@ -1502,8 +1508,9 @@ void DisplaySensorValues(void)
 				ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);		
 				if(senVal.errorCode == ERROR_OK)
 				{	
-					diff = PreTd-PostTd;	
-					if(diff < GetParameterValue(TEMP_DIFF_ALARM_LIMIT))
+					TDdiff = PreTd-PostTd;	
+					TDdiffErr=0;
+					if(TDdiff < GetParameterValue(TEMP_DIFF_ALARM_LIMIT))
 					{	
 						toggle ^= 1;
 						if(toggle)
@@ -1512,12 +1519,13 @@ void DisplaySensorValues(void)
 						}
 					}
 					
-					FormatFloat(diff);
+					FormatFloat(TDdiff);
 					locked_sprintf_P(displayStr, PSTR("TD:%s"), formatedValue);
 				}
 				else
 				{
 					locked_sprintf_P(displayStr, PSTR("TD:Err"));
+					TDdiffErr=1;
 				}
 			}
 			PrintLineInBox(LEFT,164,GLCD_PIXEL_X-1,144,displayStr);
@@ -2958,12 +2966,20 @@ uint8_t GetParameter( char paraId, int *paraValue )
    if( GetParaInfo( paraId, &paraInfoVal ) != 0 )
       return ERROR_PARA_INVALID;
 
-   if( paraInfoVal.priValidationFunction != NULL )
+	if( paraInfoVal.priValidationFunction != NULL && paraInfoVal.priValidationFunction != IsMasterReset)
       if((*paraInfoVal.priValidationFunction)() == 0 )
          return ERROR_PARA_NOT_SUPORTED;
-   if( paraInfoVal.secValidationFunction != NULL )
+   if( paraInfoVal.secValidationFunction != NULL && paraInfoVal.secValidationFunction != IsMasterReset)
       if((*paraInfoVal.secValidationFunction)() == 0 )
          return ERROR_PARA_NOT_SUPORTED;
+		 
+		 
+   //if( paraInfoVal.priValidationFunction != NULL )
+      //if((*paraInfoVal.priValidationFunction)() == 0 )
+         //return ERROR_PARA_NOT_SUPORTED;
+   //if( paraInfoVal.secValidationFunction != NULL )
+      //if((*paraInfoVal.secValidationFunction)() == 0 )
+         //return ERROR_PARA_NOT_SUPORTED;
    if( paraInfoVal.parameterHandler != NULL )
       (* paraInfoVal.parameterHandler)( PARA_READ_VALUE_ONLY, paraValue );
 

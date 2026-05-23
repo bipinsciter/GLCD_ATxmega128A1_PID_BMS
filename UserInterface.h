@@ -516,6 +516,8 @@ int GetParameterValue( PARAMETER paraId );
 extern unsigned char systemError;
 //extern unsigned char displayPage;
 extern char gu8_inOutput[16][10];
+extern int PreTd,PostTd,TDdiff;
+extern uint8_t PreTdErr,PostTdErr,TDdiffErr;
 	
 void UIResourceLock();
 void UIResourceUnlock();

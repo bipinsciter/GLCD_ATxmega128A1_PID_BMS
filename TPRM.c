@@ -108,7 +108,7 @@ void InitGPIO(void)
 	// PA7 is KEY6
 	
 	PORTA_DIR = 0x3F;
-	PORTA_OUT = 0xFF;      // set high
+	PORTA_OUT = 0xE0;      // set high
 	
 	PORTA.DIRCLR = PIN6_bm; // pin6 is input
 	__PORT_PULLUP(PORTA, PIN6_bm); // Enable Pull up on KEY3

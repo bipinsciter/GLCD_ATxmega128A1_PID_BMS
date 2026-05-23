@@ -428,46 +428,47 @@ void SerialInterfaceTask( void * taskPara )
 //		     case READ_LOG_CURRENT:
 //					break;
 
-
 		     case READ_INPUT:
-               		if( rxDataLen != (uint8_t)3 )
-               		{
-    		          	txDataBuffer[0] = ERROR_PARA_INVALID;
-	    			    SendPacket( READ_INPUT, txDataBuffer, 1);
-		    		    break;
-			      	}
+               		//if( rxDataLen != (uint8_t)3 )
+               		//{
+    		          	//txDataBuffer[0] = ERROR_PARA_INVALID;
+	    			    //SendPacket( READ_INPUT, txDataBuffer, 1);
+		    		    //break;
+			      	//}
                 	GetInput( (uint8_t*)&txDataBuffer[1] );  // return value
   		   			txDataBuffer[0] = ERROR_OK;
                 	SendPacket( READ_INPUT, txDataBuffer, 2 );
 					break;
 
 		     case READ_OUTPUT:
-               		if( rxDataLen != (uint8_t)3 )
-               		{
-    		          	txDataBuffer[0] = ERROR_PARA_INVALID;
-	    			    SendPacket( READ_OUTPUT, txDataBuffer, 1);
-		    		    break;
-			      	}
+               		//if( rxDataLen != (uint8_t)4 )
+               		//{
+    		          	//txDataBuffer[0] = ERROR_PARA_INVALID;
+	    			    //SendPacket( READ_OUTPUT, txDataBuffer, 1);
+		    		    //break;
+			      	//}
                 	GetOutput( (uint8_t*)&txDataBuffer[1] );  // return value
   		   			txDataBuffer[0] = ERROR_OK;
                 	SendPacket( READ_OUTPUT, txDataBuffer, 2 );
 					break;
 
 		     case WRITE_OUTPUT:
-               		if( rxDataLen != (uint8_t)4 )
-               		{
-	               		txDataBuffer[0] = ERROR_PARA_INVALID;
-	               		SendPacket( WRITE_OUTPUT, txDataBuffer, 1);
-	               		break;
-               		}
- 			      	SetOutput( (uint8_t)rxDataBuffer[2], (uint8_t*)&txDataBuffer[1] );  // set value, return value
+               		//if( rxDataLen != (uint8_t)4 )
+               		//{
+	               		//txDataBuffer[0] = ERROR_PARA_INVALID;
+	               		//SendPacket( WRITE_OUTPUT, txDataBuffer, 1);
+	               		//break;
+               		//}
+ 			      	SetOutput( (uint8_t)rxDataBuffer[3], (uint8_t*)&txDataBuffer[1] );  // set value, return value
  				   	txDataBuffer[0] = ERROR_OK;
                		SendPacket( WRITE_OUTPUT, txDataBuffer, 2 );
+					OSWriteEEPromWord((unsigned int *)EA_OUTPUT, rxDataBuffer[3]);
 					break;
 
 
 		     case READ_PARAMETER:
-               if( rxDataLen < (uint8_t)1 )
+					
+					if( rxDataLen < (uint8_t)1 )
 					{
     		            txDataBuffer[0] = ERROR_PARA_INVALID;
 	    			    SendPacket( READ_PARAMETER, txDataBuffer, 1);
@@ -1091,7 +1092,6 @@ static int MakeAllRuntimeParaXmitSrting()
 		if( senVal.errorCode == 0 )
 		{
 			locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
-			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
 			i += strlen(&txDataBuffer[i]);
 		}
 	}
@@ -1103,7 +1103,7 @@ static int MakeAllRuntimeParaXmitSrting()
 
     if (IsTemperatureEnabled())
     {
-           GetPareValue(TEMPERATURE_VAL_INDEX, &senVal);//GetTemperature( &senVal );
+           GetPareValue(TEMPERATURE_VAL_INDEX, &senVal);
        txDataBuffer[i++] = senVal.errorCode;
 	   if( senVal.errorCode == 0 )
 	   {
@@ -1114,12 +1114,28 @@ static int MakeAllRuntimeParaXmitSrting()
 	else
 	{
        txDataBuffer[i++] = ERROR_CMD_INVALID;
+	}
+	txDataBuffer[i++] = SERIAL_RESP_SEP;
+	
+	if (IsTemperature2Enabled())
+	{
+		GetPareValue(TEMPERATURE2_VAL_INDEX, &senVal);
+		txDataBuffer[i++] = senVal.errorCode;
+		if( senVal.errorCode == 0 )
+		{
+			locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
+			i += strlen(&txDataBuffer[i]);
+		}
+	}
+	else
+	{
+		txDataBuffer[i++] = ERROR_CMD_INVALID;
 	}
 	txDataBuffer[i++] = SERIAL_RESP_SEP;
 
     if (IsHumidityEnabled())
     {
-           GetPareValue(HUMIDITY_VAL_INDEX, &senVal);//GetHumidity( &senVal );
+           GetPareValue(HUMIDITY_VAL_INDEX, &senVal);
        txDataBuffer[i++] = senVal.errorCode;
 	   if( senVal.errorCode == 0 )
 	   {
@@ -1132,9 +1148,74 @@ static int MakeAllRuntimeParaXmitSrting()
        txDataBuffer[i++] = ERROR_CMD_INVALID;
 	}
 	txDataBuffer[i++] = SERIAL_RESP_SEP;
+	
+	 if (IsTemperature2Enabled())
+	 {
+		 GetPareValue(HUMIDITY2_VAL_INDEX, &senVal);
+		 txDataBuffer[i++] = senVal.errorCode;
+		 if( senVal.errorCode == 0 )
+		 {
+			 locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
+			 i += strlen(&txDataBuffer[i]);
+		 }
+	 }
+	 else
+	 {
+		 txDataBuffer[i++] = ERROR_CMD_INVALID;
+	 }
+	 txDataBuffer[i++] = SERIAL_RESP_SEP;
+	 
+	//if (IsTemperatureEnabled() && IsHumidityEnabled())
+	//{
+		//txDataBuffer[i++] = PreTdErr;
+		//if( PreTdErr == 0 )
+		//{
+			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), PreTd );
+			//i += strlen(&txDataBuffer[i]);
+		//}
+	//}
+	//else
+	//{
+		//txDataBuffer[i++] = ERROR_CMD_INVALID;
+	//}
+	//txDataBuffer[i++] = SERIAL_RESP_SEP;
+	
+	//if (IsTemperature2Enabled())
+	//{
+		//txDataBuffer[i++] = PostTdErr;
+		//if( PostTdErr == 0 )
+		//{
+			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), PostTd );
+			//i += strlen(&txDataBuffer[i]);
+		//}
+	//}
+	//else
+	//{
+		//txDataBuffer[i++] = ERROR_CMD_INVALID;
+	//}
+	//txDataBuffer[i++] = SERIAL_RESP_SEP;
+	
+	//if (IsTemperatureEnabled() && IsHumidityEnabled() && IsTemperature2Enabled())
+	//{
+		//txDataBuffer[i++] = TDdiffErr;
+		//if( TDdiffErr == 0 )
+		//{
+			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), TDdiff );
+			//i += strlen(&txDataBuffer[i]);
+		//}
+	//}
+	//else
+	//{
+		//txDataBuffer[i++] = ERROR_CMD_INVALID;
+	//}
+	//txDataBuffer[i++] = SERIAL_RESP_SEP;
+	
+	 
    txDataBuffer[i++] = GetSystemError();
    txDataBuffer[i++] = SERIAL_RESP_SEP;
    tempshort = GetAlarms();
+   txDataBuffer[i++] = tempshort & 0x3;
+   tempshort >>= 2;
    txDataBuffer[i++] = tempshort & 0x3;
    tempshort >>= 2;
    txDataBuffer[i++] = tempshort & 0x3;
@@ -1159,9 +1240,11 @@ static int MakeAllRuntimeParaXmitSrting()
    txDataBuffer[i++] = ((char *)&paraValue)[0];
    txDataBuffer[i++] = ((char *)&paraValue)[1];					
    txDataBuffer[i++] = SERIAL_RESP_SEP;
+   
    GetInput( (uint8_t *)&txDataBuffer[i++] );		// Input 
    GetOutput( (uint8_t *)&txDataBuffer[i++] );		// Output
    txDataBuffer[i++] = SERIAL_RESP_SEP;
+   
    txDataBuffer[i++] = PRES_SENS_SM9543;
    txDataBuffer[i++] = (uint8_t)GetParameterValue(DP1_UNIT);
    paraValue =  GetParameterValue(DP1_RANGE);

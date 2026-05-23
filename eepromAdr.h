@@ -171,6 +171,7 @@
 #define EA_TEMP_DIFF_ALARM_LIMIT				 (292*2)
 #define EA_RH2_ZERO_ADJ							 (293*2)
 #define EA_TEMP_RH2_SENS_TYPE                    (294*2)
+#define EA_OUTPUT				                 (295*2)
 
 #define EA_DEFAULT_SAVE							 (300*2)
 #define EA_CONFIG_SYSTEM         		         (301*2)

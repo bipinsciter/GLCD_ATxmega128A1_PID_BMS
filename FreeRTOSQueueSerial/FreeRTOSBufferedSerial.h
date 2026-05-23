@@ -10,7 +10,7 @@ QueueHandle_t vUSARTC0_RxQueue, vUSARTC0_TxQueue;
 QueueHandle_t vUSARTC1_RxQueue, vUSARTC1_TxQueue;
 
 // Buffer size can be any thing from 2 to 250
-#define TX0_BUFSZ 128
+#define TX0_BUFSZ 192
 #define RX0_BUFSZ 32
 #define TX1_BUFSZ 128
 #define RX1_BUFSZ 32

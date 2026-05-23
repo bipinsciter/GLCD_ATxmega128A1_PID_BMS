@@ -11,6 +11,7 @@
 #include "DAC7573.h"
 #include "locked_printf.h"
 #include "PressureSens.h"
+#include "eepromAdr.h"
 //#include "ParticalSenser_IPS7100.h"
 #include "ParticalSenser_SEN55.h"
 
@@ -140,7 +141,20 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 	//LED_HUM_ALM_OFF;
 	
 	OUTPUT_PORT_DIR = 0xFF;  // As outputs 
-	OUTPUT_PORT = 0xFF;      // set high
+	
+	uint16_t Output;
+	
+	Output = OSReadEEPromWord((unsigned int *)EA_OUTPUT);
+	if(Output > 0x0F)
+	{
+		
+	}
+	else
+	{
+		SetOutput( (uint8_t)Output, (uint8_t*)&Output );
+	}
+	
+	//OUTPUT_PORT = 0xE0;      // set high
 
 	INPUT_PORT_DIR = 0xE0;  // As inputs
 	INPUT_PORT = 0xFF;      // Pullups on
