@@ -37,7 +37,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     105
+#define SOFTWARE_VERSION                     106
 
 #define TRUE 1
 #define FALSE 0
@@ -729,7 +729,7 @@ static char * Output2MappingPara( uint8_t operationType, int16_t * paraValue );
 static char * Output3MappingPara( uint8_t operationType, int16_t * paraValue );
 static char * Output4MappingPara( uint8_t operationType, int16_t * paraValue );
 static char * OutputMappingPara( uint8_t operationType, int16_t * paraValue, int16_t dfltVal, unsigned int eeAddress );
-
+static char * OutputMappingPara1( uint8_t operationType, int16_t * paraValue, int16_t dfltVal, unsigned int eeAddress );
 
 //static void FormatAbsPressure( uint8_t unit, int16_t value);
 //static void FormatDiffPressure( uint8_t unit, int16_t value);
@@ -1237,7 +1237,7 @@ void DisplaySensorValues(void)
 		ALARMS alarmOut;
 		static uint8_t toggle=0,clear=0;
 		alarmOut.alarmByte = GetAlarms();
-		if(alarmOut.alarm.fire==1)
+		if((alarmOut.alarm.fire==1) || (alarmOut.alarm.door==1))
 		{
 			uc1638_FillScreen(BLANK1);
 			toggle ^= 1;
@@ -1245,36 +1245,39 @@ void DisplaySensorValues(void)
 			{
 				//ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
 				ks0xxx_SelectFont(Font_Verdana_10x24, ks0xxx_ReadFontData, BLACK);
-				PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< FIRE DETECTED >");
+				if(alarmOut.alarm.fire==1) PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< FIRE DETECTED >");
+				else if(alarmOut.alarm.door==1) PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< DOOR OPEN >");
+				else
+				{
+					PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,40,"< FIRE DETECTED >");
+					PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< DOOR OPEN >");
+				}
 			}
 			
-			OUTPUT1_LOW;
-			OUTPUT2_LOW;
-			OUTPUT3_LOW;
-			OUTPUT4_LOW;
-			clear=1;
-			return;
-		}
-		
-		if(alarmOut.alarm.door==1)
-		{
-			uc1638_FillScreen(BLANK1);
-			toggle ^= 1;
-			if(toggle)
+			if(GetParameterValue(OUTPUT1_MAPPING)==OUTPUT1_NORMAL)
 			{
-				//ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
-				ks0xxx_SelectFont(Font_Verdana_10x24, ks0xxx_ReadFontData, BLACK);
-				PrintLineInBoxWOClear(CENTER,0,GLCD_PIXEL_X-1,60,"< DOOR OPEN >");
+				OUTPUT1_HIGH;
 			}
-			
-			OUTPUT1_LOW;
-			OUTPUT2_LOW;
-			OUTPUT3_LOW;
-			OUTPUT4_LOW;
+			else
+			{
+				OUTPUT1_LOW;
+			}
+
 			clear=1;
 			return;
 		}
-		
+		else
+		{
+			if(GetParameterValue(OUTPUT1_MAPPING)==OUTPUT1_NORMAL)
+			{
+				OUTPUT1_LOW;
+			}
+			else
+			{
+				OUTPUT1_HIGH;
+			}
+		}
+
 		if(u8_resetTimer)
 		{
 			uc1638_FillScreen(BLANK1);
@@ -5264,7 +5267,7 @@ static char * SetOutPolarityPara( uint8_t operationType, int16_t * paraValue, un
 
 static char * Output1MappingPara( uint8_t operationType, int16_t * paraValue )
 {
-   return OutputMappingPara( operationType, paraValue, OUTPUT_INPUT1, EA_OUTPUT1_MAPPING );
+   return OutputMappingPara1( operationType, paraValue, OUTPUT1_NORMAL, EA_OUTPUT1_MAPPING );
 }
 
 static char * Output2MappingPara( uint8_t operationType, int16_t * paraValue )
@@ -5326,6 +5329,26 @@ static char * OutputMappingPara( uint8_t operationType, int16_t * paraValue, int
    return displayStr;
 }
 
+static char * OutputMappingPara1( uint8_t operationType, int16_t * paraValue, int16_t dfltVal, unsigned int eeAddress )
+{
+	ParameterOperationsSettingsRollover( operationType, paraValue, eeAddress, dfltVal, 0, OUTPUT1_LAST_NO );
+
+	if(operationType == (uint8_t)PARA_READ_VALUE_ONLY || operationType == (uint8_t)PARA_WRITE_VALUE_ONLY)
+	return NULL;
+	if (IsLCDDisplay())
+	{
+		switch( *paraValue )
+		{
+			case OUTPUT1_NORMAL: locked_sprintf_P( displayStr, PSTR("NORMAL"));
+			break;
+			case OUTPUT1_REVERSE:   locked_sprintf_P( displayStr, PSTR("REVERSE"));
+			break;
+			default:              locked_sprintf_P( displayStr, PSTR("UNKOWN"));
+			break;
+		}
+	}
+	return displayStr;
+}
 
 //static char * TempRHScanTimePara(uint8_t operationType, int16_t * paraValue )
 //{

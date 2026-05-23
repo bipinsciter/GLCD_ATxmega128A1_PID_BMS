@@ -430,7 +430,7 @@ void SerialInterfaceTask( void * taskPara )
 
 
 		     case READ_INPUT:
-               		if( rxDataLen != (uint8_t)0 )
+               		if( rxDataLen != (uint8_t)3 )
                		{
     		          	txDataBuffer[0] = ERROR_PARA_INVALID;
 	    			    SendPacket( READ_INPUT, txDataBuffer, 1);
@@ -442,7 +442,7 @@ void SerialInterfaceTask( void * taskPara )
 					break;
 
 		     case READ_OUTPUT:
-               		if( rxDataLen != (uint8_t)0 )
+               		if( rxDataLen != (uint8_t)3 )
                		{
     		          	txDataBuffer[0] = ERROR_PARA_INVALID;
 	    			    SendPacket( READ_OUTPUT, txDataBuffer, 1);
@@ -454,12 +454,12 @@ void SerialInterfaceTask( void * taskPara )
 					break;
 
 		     case WRITE_OUTPUT:
-               		if( rxDataLen != (uint8_t)1 )
+               		if( rxDataLen != (uint8_t)4 )
                		{
-    		          	txDataBuffer[0] = ERROR_PARA_INVALID;
-	    			    SendPacket( WRITE_OUTPUT, txDataBuffer, 1);
-		    		    break;
-			      	}
+	               		txDataBuffer[0] = ERROR_PARA_INVALID;
+	               		SendPacket( WRITE_OUTPUT, txDataBuffer, 1);
+	               		break;
+               		}
  			      	SetOutput( (uint8_t)rxDataBuffer[2], (uint8_t*)&txDataBuffer[1] );  // set value, return value
  				   	txDataBuffer[0] = ERROR_OK;
                		SendPacket( WRITE_OUTPUT, txDataBuffer, 2 );

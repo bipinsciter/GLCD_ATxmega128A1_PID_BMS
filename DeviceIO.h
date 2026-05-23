@@ -26,6 +26,12 @@
 
 #define DOOR_SENSE		(PORTB_IN & PIN3_bm)
 
+#define INPUT1_SENSE	(PORTK_IN & PIN0_bm)
+#define INPUT2_SENSE	(PORTK_IN & PIN1_bm)
+#define INPUT3_SENSE	(PORTK_IN & PIN2_bm)
+#define INPUT4_SENSE	(PORTK_IN & PIN3_bm)
+#define INPUT5_SENSE	(PORTK_IN & PIN4_bm)
+
 #define INPUT_PORT        PORTK_OUT
 #define INPUT_PORT_DIR    PORTK_DIR
 #define INPUT_PORT_IN     PORTK_IN

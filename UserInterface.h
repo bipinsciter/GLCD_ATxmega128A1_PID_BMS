@@ -448,9 +448,15 @@ enum stopbits
 #define OUTPUT_INPUT4REV   8
 #define OUTPUT_INPUT5      9
 #define OUTPUT_INPUT5REV   10
+#define OUTPUT_LAST_NO     OUTPUT_INPUT5REV
+
+#define OUTPUT1_NORMAL      0
+#define OUTPUT1_REVERSE     1
+#define OUTPUT1_LAST_NO     OUTPUT1_REVERSE
+
 //#define OUTPUT_DOOR_INPUT  11
 //#define OUTPUT_DOOR_INPUT_REV   12
-#define OUTPUT_LAST_NO     OUTPUT_INPUT5REV
+
 
 enum pressureUnit
 {

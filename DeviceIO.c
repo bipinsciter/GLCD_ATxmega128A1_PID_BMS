@@ -679,19 +679,19 @@ static void DoIOPortMapping()
 
    int mapping, pol = 0;
    
-   mapping = GetParameterValue(OUTPUT1_MAPPING);
-   if( mapping )
-   {
-      mapping = mapping - 1;  // Normalize to 0 numbering from 1
-      pol = mapping % 2;  // Last bet as polarity, pol = 0 for normal, 1 for reverse polarity
-      mapping /= 2;  // Discard last bit
-	  mapping = 0x1 << mapping;   // generate mask to read input
-      pol = pol * mapping;  // Set polarity mask
-	  if(( inputs ^ pol ) & mapping )  // Normalize input based on output polarity
-	     OUTPUT1_HIGH;
-      else
-         OUTPUT1_LOW;
-   }
+   //mapping = GetParameterValue(OUTPUT1_MAPPING);
+   //if( mapping )
+   //{
+      //mapping = mapping - 1;  // Normalize to 0 numbering from 1
+      //pol = mapping % 2;  // Last bet as polarity, pol = 0 for normal, 1 for reverse polarity
+      //mapping /= 2;  // Discard last bit
+	  //mapping = 0x1 << mapping;   // generate mask to read input
+      //pol = pol * mapping;  // Set polarity mask
+	  //if(( inputs ^ pol ) & mapping )  // Normalize input based on output polarity
+	     //OUTPUT1_HIGH;
+      //else
+         //OUTPUT1_LOW;
+   //}
    mapping = GetParameterValue(OUTPUT2_MAPPING);
    if( mapping )
    {
@@ -738,14 +738,14 @@ void SetOutput( uint8_t outValue, uint8_t * retVal )
 {
    int mapping;
 
-   mapping = GetParameterValue(OUTPUT1_MAPPING);
-   if( !mapping )
-   {
-	  if( outValue & 0x1 )
-	     OUTPUT1_HIGH;
-	  else
-	     OUTPUT1_LOW;
-   }
+   //mapping = GetParameterValue(OUTPUT1_MAPPING);
+   //if( !mapping )
+   //{
+	  //if( outValue & 0x1 )
+	     //OUTPUT1_HIGH;
+	  //else
+	     //OUTPUT1_LOW;
+   //}
    mapping = GetParameterValue(OUTPUT2_MAPPING);
    if( !mapping )
    {
@@ -856,6 +856,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 		wdt_reset();			//Serve Watchdog Timer
 	    	
 		if(CurrentDoorStatus()==OPEN)
+		//if(INPUT1_SENSE==CLOSE)
 		{
 			alarmOut.alarm.door=1;
 		}
