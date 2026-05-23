@@ -342,7 +342,7 @@ void PIDLoopControl()
 		GetPareValue(DP2_VAL_INDEX, &sensValue);//GetDP2(&sensValue);
         if( sensValue.errorCode == ERROR_OK )
         {
-    		error = GetParameterValue(DP2_PID_SET_VALUE) - sensValue.FinalValue;
+    		error = GetParameterValue(DP2_PID_SET_VALUE) - sensValue.convertedValue;
 			deltaError = error - diffPresLastError;
     		diffPresLastError = error;
 
@@ -400,7 +400,7 @@ void PIDLoopControl()
 		GetPareValue(DP1_VAL_INDEX, &sensValue);//GetDP1(&sensValue);
        if( sensValue.errorCode == ERROR_OK )
        {
-    		error = GetParameterValue(DP1_PID_SET_VALUE) - sensValue.FinalValue;
+    		error = GetParameterValue(DP1_PID_SET_VALUE) - sensValue.convertedValue;
 			deltaError = error - absPresLastError;
     		absPresLastError = error;
 

@@ -317,8 +317,8 @@ void SerialInterfaceTask( void * taskPara )
 				    {
 				       GetPareValue(DP1_VAL_INDEX, &senVal);//GetDP1( &senVal );
 				       txDataBuffer[0] = senVal.errorCode;
-					   //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
-					   locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.FinalValue );
+					   //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
+					   locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
 				       SendPacket( READ_DP1_VALUE, txDataBuffer, strlen(txDataBuffer+1)+1);
 				    }
 					else
@@ -332,8 +332,8 @@ void SerialInterfaceTask( void * taskPara )
 				    {
 						GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
 				       txDataBuffer[0] = senVal.errorCode;
-				       locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.FinalValue );
-					   //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
+				       locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
+					   //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
 				       SendPacket( READ_DP2_VALUE, txDataBuffer, strlen(txDataBuffer+1)+1);
 				    }
 					else
@@ -347,8 +347,8 @@ void SerialInterfaceTask( void * taskPara )
 				 {
 					 GetPareValue(DP3_VAL_INDEX, &senVal);//GetDP3( &senVal );
 					 txDataBuffer[0] = senVal.errorCode;
-					 locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.FinalValue );
-					 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
+					 locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
+					 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
 					 SendPacket( READ_DP3_VALUE, txDataBuffer, strlen(txDataBuffer+1)+1);
 				 }
 				 else
@@ -735,7 +735,7 @@ void SerialBroadcast()
       {
          GetPareValue(DP1_VAL_INDEX, &senVal);//GetDP1( &senVal );
          txDataBuffer[0] = senVal.errorCode;
-		 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
+		 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
          locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
          SendPacket( DP1_BRDCAST, txDataBuffer, strlen(txDataBuffer+1)+1);
       }
@@ -743,7 +743,7 @@ void SerialBroadcast()
       {
          GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
          txDataBuffer[0] = senVal.errorCode;
-		 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
+		 //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
          locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
          SendPacket( DP2_BRDCAST, txDataBuffer, strlen(txDataBuffer+1)+1 );
       }
@@ -751,7 +751,7 @@ void SerialBroadcast()
 	  {
 		  GetPareValue(DP3_VAL_INDEX, &senVal);//GetDP3( &senVal );
 		  txDataBuffer[0] = senVal.errorCode;
-		  //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
+		  //locked_sprintf_P( txDataBuffer+1, PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
 		  locked_sprintf_P( txDataBuffer+1, PSTR("%d"), senVal.convertedValue );
 		  SendPacket( DP3_BRDCAST, txDataBuffer, strlen(txDataBuffer+1)+1 );
 	  }
@@ -791,17 +791,17 @@ void SerialPrinter()
       if (IsDP1Enabled())
       {
          GetPareValue(DP1_VAL_INDEX, &senVal);//GetDP1( &senVal );
-         SerialPrint( FormatDP1OneLine( txDataBuffer, senVal.errorCode, senVal.FinalValue ));
+         SerialPrint( FormatDP1OneLine( txDataBuffer, senVal.errorCode, senVal.convertedValue ));
       }
       if (IsDP2Enabled())
       {
          GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
-         SerialPrint( FormatDP2OneLine( txDataBuffer, senVal.errorCode, senVal.FinalValue ));
+         SerialPrint( FormatDP2OneLine( txDataBuffer, senVal.errorCode, senVal.convertedValue ));
       }
 	  if (IsDP3Enabled())
 	  {
 		  GetPareValue(DP3_VAL_INDEX, &senVal);//GetDP3( &senVal );
-		  SerialPrint( FormatDP3OneLine( txDataBuffer, senVal.errorCode, senVal.FinalValue ));
+		  SerialPrint( FormatDP3OneLine( txDataBuffer, senVal.errorCode, senVal.convertedValue ));
 	  }
       if (IsTemperatureEnabled())
       {
@@ -1061,8 +1061,8 @@ static int MakeAllRuntimeParaXmitSrting()
       txDataBuffer[i++] = senVal.errorCode;
       if( senVal.errorCode == 0 )
 	   {
-         locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.FinalValue );
-		 //locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
+         locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
+		 //locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP1_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP1_RANGE)) );
 	      i += strlen(&txDataBuffer[i]);
 	   }
    }
@@ -1078,8 +1078,8 @@ static int MakeAllRuntimeParaXmitSrting()
       txDataBuffer[i++] = senVal.errorCode;
 	   if( senVal.errorCode == 0 )
 	   {
-         locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.FinalValue );
-		 //locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
+         locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
+		 //locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP2_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP2_RANGE)) );
 		   i += strlen(&txDataBuffer[i]);
 	   }
    }
@@ -1095,8 +1095,8 @@ static int MakeAllRuntimeParaXmitSrting()
 		txDataBuffer[i++] = senVal.errorCode;
 		if( senVal.errorCode == 0 )
 		{
-			locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.FinalValue );
-			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.FinalValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
+			locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), senVal.convertedValue );
+			//locked_sprintf_P( &txDataBuffer[i], PSTR("%d"), ConvertToPascal(PRES_SENS_SM9543, senVal.convertedValue, DP3_SENSOR_RESOLUTION_SM9543, GetParameterValue(DP3_RANGE)) );
 			i += strlen(&txDataBuffer[i]);
 		}
 	}

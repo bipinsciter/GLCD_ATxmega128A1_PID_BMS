@@ -37,7 +37,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     102
+#define SOFTWARE_VERSION                     103
 
 #define TRUE 1
 #define FALSE 0
@@ -1238,13 +1238,13 @@ void DisplaySensorValues(void)
 
 		//---------------------------------------------------------------------
 		GetPareValue(DP1_VAL_INDEX, &senVal);//GetDP1( &senVal );
-		if( abs(senVal.FinalValue-(DP1_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP1_ZERO_RNG ))
-		senVal.FinalValue = (DP1_SENSOR_RESOLUTION_SM9543/2);
-		//noSystemErrDisp = DisplayDP1(senVal.errorCode, senVal.FinalValue);
+		if( abs(senVal.convertedValue-(DP1_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP1_ZERO_RNG ))
+		senVal.convertedValue = (DP1_SENSOR_RESOLUTION_SM9543/2);
+		//noSystemErrDisp = DisplayDP1(senVal.errorCode, senVal.convertedValue);
 		
 		if(!displayPage)
 		{
-			value1 = senVal.FinalValue;
+			value1 = senVal.convertedValue;
 			errorCode = senVal.errorCode;
 		}
 		else if(displayPage==1)
@@ -1266,13 +1266,13 @@ void DisplaySensorValues(void)
 		noSystemErrDisp = DisplayDP1(errorCode, value1);
 		//---------------------------------------------------------------------
 		GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
-		if( abs(senVal.FinalValue-(DP2_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP2_ZERO_RNG ))
-		senVal.FinalValue = (DP2_SENSOR_RESOLUTION_SM9543/2);
-		//noSystemErrDisp = DisplayDP2(senVal.errorCode, senVal.FinalValue);
+		if( abs(senVal.convertedValue-(DP2_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP2_ZERO_RNG ))
+		senVal.convertedValue = (DP2_SENSOR_RESOLUTION_SM9543/2);
+		//noSystemErrDisp = DisplayDP2(senVal.errorCode, senVal.convertedValue);
 		
 		if(!displayPage)
 		{
-			value1 = senVal.FinalValue;
+			value1 = senVal.convertedValue;
 			errorCode = senVal.errorCode;
 		}
 		else if(displayPage==1)
@@ -1294,13 +1294,13 @@ void DisplaySensorValues(void)
 		noSystemErrDisp = DisplayDP2(errorCode, value1);
 		//---------------------------------------------------------------------
 		GetPareValue(DP3_VAL_INDEX, &senVal);//GetDP3( &senVal );
-		if( abs(senVal.FinalValue-(DP3_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP3_ZERO_RNG ))
-		senVal.FinalValue = (DP3_SENSOR_RESOLUTION_SM9543/2);
-		//noSystemErrDisp = DisplayDP3(senVal.errorCode, senVal.FinalValue);
+		if( abs(senVal.convertedValue-(DP3_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP3_ZERO_RNG ))
+		senVal.convertedValue = (DP3_SENSOR_RESOLUTION_SM9543/2);
+		//noSystemErrDisp = DisplayDP3(senVal.errorCode, senVal.convertedValue);
 		
 		if(!displayPage)
 		{
-			value1 = senVal.FinalValue;
+			value1 = senVal.convertedValue;
 			errorCode = senVal.errorCode;
 		}
 		else if(displayPage==1)
@@ -1315,7 +1315,7 @@ void DisplaySensorValues(void)
 		}
 		else
 		{
-			value1 = senVal.FinalValue;
+			value1 = senVal.convertedValue;
 			errorCode = senVal.errorCode;
 		}
 		

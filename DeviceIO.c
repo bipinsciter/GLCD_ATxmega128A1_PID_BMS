@@ -38,7 +38,7 @@ static SENSOR_VALUE sensorVal[TOTAL_VAL_INDEX];
 //static ips7100_pm_value_t isp7100_pm_1,isp7100_pm_2;
 
 static int lastval1=0,lastval2=0,lastval3=0;
-static uint8_t checktime1=0,checktime2=0,checktime3=0;
+//static uint8_t checktime1=0,checktime2=0,checktime3=0;
 
 static OSSemaMutex DeviceValueMutex;
 
@@ -123,95 +123,59 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 
 		if (IsDP1Enabled())
 		{
-			retVal = GetSensorDP1_SM9543( &value );//GetSensorDP1( &value );
+			retVal = GetSensorDP1_SM9543( &value );
 		  
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP1_ZERO_ADJ);
-			//SetDP1( retVal, value, convertedValue );
-			AveragePara(DP1_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
-			
+
 			if((abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)>GetParameterValue(DP1_SENS_MIN)) && (abs(lastval1-sensorVal[DP1_VAL_INDEX].convertedValue)<GetParameterValue(DP1_SENS_MAX)))
 			{
-				//checktime1++;
-				if (checktime1>=5)
-				{
-					checktime1=0;
-					lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
-				}
-				else
-				{
-					sensorVal[DP1_VAL_INDEX].convertedValue=lastval1;
-				}
+				sensorVal[DP1_VAL_INDEX].convertedValue=lastval1;
 			}
 			else
 			{
 				lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
-				checktime1=0;
 			}
-		 
-			sensorVal[DP1_VAL_INDEX].FinalValue = sensorVal[DP1_VAL_INDEX].convertedValue;
+			
+			AveragePara(DP1_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
 		}
 		
 		if (IsDP2Enabled())
 		{
-			retVal = GetSensorDP2_SM9543( &value );//GetSensorDP2( &value );
+			retVal = GetSensorDP2_SM9543( &value );
 		 
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP2_ZERO_ADJ);
-			//SetDP2( retVal, value, convertedValue );
-			AveragePara(DP2_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
-			
+
 			if((abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)>GetParameterValue(DP2_SENS_MIN)) && (abs(lastval2-sensorVal[DP2_VAL_INDEX].convertedValue)<GetParameterValue(DP2_SENS_MAX)))
 			{
-				//checktime2++;
-				if (checktime2>5)
-				{
-					checktime2=0;
-					lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
-				}
-				else
-				{
-					sensorVal[DP2_VAL_INDEX].convertedValue=lastval2;
-				}
+				sensorVal[DP2_VAL_INDEX].convertedValue=lastval2;
 			}
 			else
 			{
 				lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
-				checktime2=0;
 			}
-		  
-			sensorVal[DP2_VAL_INDEX].FinalValue = sensorVal[DP2_VAL_INDEX].convertedValue;
+
+			AveragePara(DP2_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
 		}
 	  
 		if (IsDP3Enabled())
 		{
-			retVal = GetSensorDP3_SM9543( &value );//, &temprValue );//GetSensorDP3( &value, &temprValue );
+			retVal = GetSensorDP3_SM9543( &value );
 
 			// Convert the value to PSI
 			convertedValue = value + GetParameterValue(DP3_ZERO_ADJ);
-			//SetDP3( retVal, value, convertedValue );
-			AveragePara(DP3_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
-			
+
 			if((abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)>GetParameterValue(DP3_SENS_MIN)) && (abs(lastval3-sensorVal[DP3_VAL_INDEX].convertedValue)<GetParameterValue(DP3_SENS_MAX)))
 			{
-				//checktime3++;
-				if (checktime3>5)
-				{
-					checktime3=0;
-					lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
-				}
-				else
-				{
-					sensorVal[DP3_VAL_INDEX].convertedValue=lastval3;
-				}
+				sensorVal[DP3_VAL_INDEX].convertedValue=lastval3;
 			}
 			else
 			{
 				lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
-				checktime3=0;
 			}
 			
-			sensorVal[DP3_VAL_INDEX].FinalValue = sensorVal[DP3_VAL_INDEX].convertedValue;
+			AveragePara(DP3_VAL_INDEX, GetParameterValue(PRES_READING_AVERAGE), retVal, value, convertedValue );
 		}
 		
 		oldAlarmOut.alarmByte = alarmOut.alarmByte;
@@ -431,20 +395,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				{  // Change in state
 					SerialPrintAlarm( ALARM_LOWER_HUMIDITY, alarmOut.alarm.humidityLow );
 				}
-				//if( oldAlarmOut.alarm.partMCHigh )
-				//{  // Change in state
-					//SerialPrintAlarm( ALARM_UPPER_PART_MC, alarmOut.alarm.partMCHigh );
-				//}
-				//if( oldAlarmOut.alarm.partVOCHigh )
-				//{  // Change in state
-					//SerialPrintAlarm( ALARM_UPPER_PART_VOC, alarmOut.alarm.partVOCHigh );
-				//}
-				//if( oldAlarmOut.alarm.partNOXHigh )
-				//{  // Change in state
-					//SerialPrintAlarm( ALARM_UPPER_PART_NOX, alarmOut.alarm.partNOXHigh );
-				//}
-				
-				//            SerialBroadcastAlarm( alarmOut.alarmByte );
 			}
 
 			//Set buzzer and relay out values based on alarm setup parameter
@@ -502,19 +452,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				buzzerOut.alarm.humidityHigh = 0;
 				buzzerOut.alarm.humidityLow = 0;
 			}
-			
-			//if( GetParameterValue(PARTICAL_ALARM_SETUP) == ALARM_ENB_BUZ_ON )
-			//{
-				//buzzerOut.alarm.partMCHigh = alarmOut.alarm.partMCHigh;
-				//buzzerOut.alarm.partVOCHigh = alarmOut.alarm.partVOCHigh;
-				//buzzerOut.alarm.partNOXHigh = alarmOut.alarm.partNOXHigh;
-			//}
-			//else
-			//{
-				//buzzerOut.alarm.partMCHigh = 0;
-				//buzzerOut.alarm.partVOCHigh = 0;
-				//buzzerOut.alarm.partNOXHigh = 0;
-			//}
 		}
 
 		//LED_PORT = ~ledState.ledByte;
@@ -676,11 +613,11 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 		DoIOPortMapping();
 		
 		#ifdef OS_AVRX
-		//AvrXDelay(&devIOLoopSleepTimer, 100);
-		AvrXDelay(&devIOLoopSleepTimer, 500);
+		AvrXDelay(&devIOLoopSleepTimer, 100);
+		//AvrXDelay(&devIOLoopSleepTimer, 500);
 		#else
-		//OSSleep( 100 );
-		OSSleep( 500 );
+		OSSleep( 100 );
+		//OSSleep( 500 );
 		#endif
 	}
 }
@@ -1293,51 +1230,24 @@ int Kalman_Update(KalmanFilter *kf, float measurement)
 	return (int)kf->X;
 }
 
-static KalmanFilter pressureKalman[TOTAL_VAL_INDEX] = {0};
-	static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
+static KalmanFilter Kalmanfilter[TOTAL_VAL_INDEX] = {0};
+static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
 //static long sampleSum[TOTAL_VAL_INDEX] = {0};
 //static int sampleBuf[TOTAL_VAL_INDEX][30] = {0};
 //static char BufPtr[TOTAL_VAL_INDEX] = {0};
 //static int LastconvertedVal[TOTAL_VAL_INDEX] = {0};
 static void AveragePara( uint8_t SenNo, uint16_t NoofSample, uint8_t error, unsigned int rawVal, int convertedVal )
 {
-	//if( AverageSamples[SenNo] != NoofSample)
-	//{
-		//AverageSamples[SenNo] = NoofSample;
-	//
-		//for( BufPtr[SenNo] = 0; BufPtr[SenNo] < AverageSamples[SenNo]; BufPtr[SenNo]++ )
-		//{
-			//sampleBuf[SenNo][(int)BufPtr[SenNo]] = convertedVal;
-		//}
-		//
-		//sampleSum[SenNo] = (long)convertedVal * AverageSamples[SenNo];
-		//BufPtr[SenNo] = 0;
-		//
-		//Kalman_Init(&pressureKalman[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
-	//}
-	//else
-	//{
-		//convertedVal = Kalman_Update(&pressureKalman[SenNo], convertedVal);
-		//
-		//sampleSum[SenNo] -= sampleBuf[SenNo][(int)BufPtr[SenNo]];
-		//sampleSum[SenNo] += convertedVal;
-		//sampleBuf[SenNo][(int)BufPtr[SenNo]] = convertedVal;
-		//BufPtr[SenNo] = ( BufPtr[SenNo] + 1 ) % AverageSamples[SenNo];
-		//convertedVal = sampleSum[SenNo] / AverageSamples[SenNo];
-	//}
-	
-	
 	if( AverageSamples[SenNo] != NoofSample)
 	{
 		AverageSamples[SenNo] = NoofSample;
 
 		// Kalman filter for pressure
-		
-		Kalman_Init(&pressureKalman[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
+		Kalman_Init(&Kalmanfilter[SenNo], 0.01, 0.1, 0.0);  // Initialize with default values
 	}
 	else
 	{
-		convertedVal = Kalman_Update(&pressureKalman[SenNo], convertedVal);
+		convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
 	}
 	
 	OSSemaTakeEver(DeviceValueMutex);
@@ -1348,61 +1258,6 @@ static void AveragePara( uint8_t SenNo, uint16_t NoofSample, uint8_t error, unsi
 }
 
 static int isBuzzerSuppressionReq = FALSE;			
-//static long sampleSum[TOTAL_VAL_INDEX] = {0};
-//static int sampleBuf[TOTAL_VAL_INDEX][30] = {0};
-//static char BufPtr[TOTAL_VAL_INDEX] = {0};
-//static uint16_t AverageSamples[TOTAL_VAL_INDEX] = {-1};
-//static int LastconvertedVal[TOTAL_VAL_INDEX] = {0};
-		//
-//static void AveragePara( uint8_t SenNo, uint16_t NoofSample, uint8_t error, unsigned int rawVal, int convertedVal )
-//{
-	////return;
-	//
-	////uint8_t CntDiff=0;
-	////switch(SenNo)
-	////{
-		////case DP1_VAL_INDEX: CntDiff=10;	break;
-		////case DP2_VAL_INDEX: CntDiff=10;	break;
-		////case DP3_VAL_INDEX: CntDiff=10;	break;
-		////case TEMPERATURE_VAL_INDEX: CntDiff=10;	break;
-		////case TEMPERATURE2_VAL_INDEX: CntDiff=10;	break;
-		////case HUMIDITY_VAL_INDEX: CntDiff=10;	break;
-		////case HUMIDITY2_VAL_INDEX: CntDiff=10;	break;
-	////}
-	//
-	//
-	//if( AverageSamples[SenNo] != NoofSample)
-	//{
-		//AverageSamples[SenNo] = NoofSample;
-		//
-		//for( BufPtr[SenNo] = 0; BufPtr[SenNo] < AverageSamples[SenNo]; BufPtr[SenNo]++ )
-		//{
-			//sampleBuf[SenNo][(int)BufPtr[SenNo]] = convertedVal;
-		//}
-		//
-		//sampleSum[SenNo] = (long)convertedVal * AverageSamples[SenNo];
-		//BufPtr[SenNo] = 0;
-	//}
-	//else
-	//{		
-		////if(abs(LastconvertedVal[SenNo]-convertedVal)>CntDiff)
-		//{
-			//sampleSum[SenNo] -= sampleBuf[SenNo][(int)BufPtr[SenNo]];
-			//sampleSum[SenNo] += convertedVal;
-			//sampleBuf[SenNo][(int)BufPtr[SenNo]] = convertedVal;
-		//}
-		////LastconvertedVal[SenNo] = convertedVal;
-		//
-		//BufPtr[SenNo] = ( BufPtr[SenNo] + 1 ) % AverageSamples[SenNo];
-		//convertedVal = sampleSum[SenNo] / AverageSamples[SenNo];
-	//}
-	//
-	//OSSemaTakeEver(DeviceValueMutex);
-	//sensorVal[SenNo].errorCode = error;
-	//sensorVal[SenNo].rawValue = rawVal;
-	//sensorVal[SenNo].convertedValue = convertedVal;
-	//OSSemaGive(DeviceValueMutex);
-//}
 
 void GetPareValue(uint8_t ParaNumber, SENSOR_VALUE * value )
 {
@@ -1410,8 +1265,7 @@ void GetPareValue(uint8_t ParaNumber, SENSOR_VALUE * value )
 	value->errorCode = sensorVal[ParaNumber].errorCode;
 	value->rawValue = sensorVal[ParaNumber].rawValue;
 	value->convertedValue = sensorVal[ParaNumber].convertedValue;
-	value->FinalValue = sensorVal[ParaNumber].FinalValue;
-	
+
 	if(ParaNumber==HUMIDITY_VAL_INDEX)
 	{
 		if(value->convertedValue>10000) value->convertedValue = 10000;
