@@ -110,7 +110,7 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 	//uint16_t value1=0;
 	int value;//, temprValue;
 	int convertedValue;
-	static uint16_t TempfireAlmTimer=0;
+	static uint16_t TempfireAlmTimer=0,TempAlmTimer=0;
 	
 	ledState.ledByte = 0;
 	oldAlarmOut.alarmByte = alarmOut.alarmByte = 0;
@@ -337,11 +337,24 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 						if( senVal.convertedValue < GetParameterValue(TEMP_LOWER_ALARM_ON_LIMIT))
 						alarmOut.alarm.tempLow = 1;
 						if( senVal.convertedValue > GetParameterValue(TEMP_UPPER_ALARM_ON_LIMIT))
-						alarmOut.alarm.tempHigh = 1;
+						{
+							alarmOut.alarm.tempHigh = 1;
+							TempAlmTimer++;
+							if(TempAlmTimer>60)
+							{
+								TempAlmTimer=0;
+								OUTPUT5_HIGH;
+							}
+						}
+						
 						if( senVal.convertedValue > GetParameterValue(TEMP_LOWER_ALARM_OFF_LIMIT))
 						alarmOut.alarm.tempLow = 0;
 						if( senVal.convertedValue < GetParameterValue(TEMP_UPPER_ALARM_OFF_LIMIT))
-						alarmOut.alarm.tempHigh = 0;
+						{
+							alarmOut.alarm.tempHigh = 0;
+							OUTPUT5_LOW;
+						}
+						
 
 						ledState.led.tempAlarm = alarmOut.alarm.tempLow | alarmOut.alarm.tempHigh;
 						ledState.led.tempOk = ~alarmOut.alarm.tempHigh;
