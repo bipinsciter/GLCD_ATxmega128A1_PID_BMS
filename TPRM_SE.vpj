@@ -1,0 +1,324 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	WorkingDir=".">
+	<Config
+		Name="Debug"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdTPRM_SE.exe"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -c %xup  %defd -g -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc %xup -g -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+	</Config>
+	<Config
+		Name="Release"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdTPRM_SE.exe"
+		CompilerConfigName="Latest Version">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc -c %xup %defd -o "%bd%n%oe" %i "%f"'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='gcc %xup -o "%o" %f %libs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rw">
+				<Exec CmdLine='vsdebugio -prog "%o"'/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				BuildFirst="1"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine='"%o"'/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+	</Config>
+	<Files>
+		<Folder
+			Name="Source Files"
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+			<F N="I2CMaster/_i2cmaster.S"/>
+			<F N="avrx/avrx_canceltimer.S"/>
+			<F N="avrx/avrx_canceltimer_exp.S"/>
+			<F N="avrx/avrx_canceltimermessage.S"/>
+			<F N="avrx/avrx_eeprom.S"/>
+			<F N="avrx/avrx_generatesinglestepinterrupt.S"/>
+			<F N="avrx/avrx_halt.S"/>
+			<F N="avrx/avrx_iar_vect.S"/>
+			<F N="avrx/avrx_message.S"/>
+			<F N="avrx/avrx_priority.S"/>
+			<F N="avrx/avrx_recvmessage.S"/>
+			<F N="avrx/avrx_reschedule.S"/>
+			<F N="avrx/avrx_resetsemaphore.S"/>
+			<F N="avrx/avrx_semaphores.S"/>
+			<F N="avrx/2.6e/avrx_semaphores.s"/>
+			<F N="avrx/avrx_singlestep.S"/>
+			<F N="avrx/avrx_starttimermessage.S"/>
+			<F N="avrx/avrx_suspend.S"/>
+			<F N="avrx_systemtimer0.c"/>
+			<F N="avrx/avrx_tasking.S"/>
+			<F N="avrx/2.6e/avrx_tasking.s"/>
+			<F N="avrx/avrx_terminate.S"/>
+			<F N="avrx/avrx_testsemaphore.S"/>
+			<F N="avrx/avrx_timequeue.S"/>
+			<F N="avrx/avrx_timequeue_exp.S"/>
+			<F N="AvrXserialIO/AvrXBufferedSerial.c"/>
+			<F N="avrx/AvrXFifo.c"/>
+			<F N="AvrXserialIO/AvrXSimpleSerial.c"/>
+			<F N="FreeRTOS/croutine.c"/>
+			<F N="DAC7573.c"/>
+			<F N="DeviceIO.c"/>
+			<F N="eeprom_i2c.c"/>
+			<F N="HardwareInfo.c"/>
+			<F N="FreeRTOS/heap_1.c"/>
+			<F N="I2CInterface.c"/>
+			<F N="I2CMaster/i2cmaster.c"/>
+			<F N="LCD/ks0xxx.c"/>
+			<F N="FreeRTOS/list.c"/>
+			<F N="locked_printf.c"/>
+			<F N="avrx/monitor.S"/>
+			<F N="os_api.c"/>
+			<F N="PeriodicProcess.c"/>
+			<F N="PID.c"/>
+			<F N="FreeRTOS/port.c"/>
+			<F N="PressureSens.c"/>
+			<F N="FreeRTOS/queue.c"/>
+			<F N="RTC.c"/>
+			<F N="TWImaster/Sample.c"/>
+			<F N="AvrXserialIO/SerialExample.c"/>
+			<F N="SerialInterface.c"/>
+			<F N="avrx/serialio.S"/>
+			<F N="SW_I2CInterface.c"/>
+			<F N="FreeRTOS/tasks.c"/>
+			<F N="TempRHSens.c"/>
+			<F N="TPRM.c"/>
+			<F N="TWImaster/twimaster.c"/>
+			<F N="UserInterface.c"/>
+		</Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+			<F N="LCD/arial_bold_14.h"/>
+			<F N="avrx/avrx-ctoasm.inc"/>
+			<F N="avrx/avrx-io.h"/>
+			<F N="avrx/avrx-signal.h"/>
+			<F N="avrx/avrx.h"/>
+			<F N="avrx/avrx.inc"/>
+			<F N="avrx_systemtimer0.h"/>
+			<F N="avrx/AvrXFifo.h"/>
+			<F N="AvrXserialIO/AvrXSerialIo.h"/>
+			<F N="LCD/Bitmap.h"/>
+			<F N="LCD/corsiva_12.h"/>
+			<F N="FreeRTOS/croutine.h"/>
+			<F N="DAC7573.h"/>
+			<F N="DeviceIO.h"/>
+			<F N="eeprom_i2c.h"/>
+			<F N="eepromAdr.h"/>
+			<F N="error.h"/>
+			<F N="LCD/font12x16.h"/>
+			<F N="Font12X16OnlyDigitsAndDot.h"/>
+			<F N="Font12X24OnlyDigitsAndDot.h"/>
+			<F N="LCD/font5X7.h"/>
+			<F N="LCD/font6x8.h"/>
+			<F N="Font_arial_Narrow.h"/>
+			<F N="Font_arial_Narrow_Big.h"/>
+			<F N="Font_arial_Narrow_Mid.h"/>
+			<F N="Font_arial_Nerrow.h"/>
+			<F N="Font_Vrinda.h"/>
+			<F N="FreeRTOS/FreeRTOS.h"/>
+			<F N="FreeRTOS/FreeRTOSConfig.h"/>
+			<F N="HardwareInfo.h"/>
+			<F N="I2CInterface.h"/>
+			<F N="I2CMaster/i2cmaster.h"/>
+			<F N="avrx/2.6e/ioavr.h"/>
+			<F N="LCD/ks0xxx.h"/>
+			<F N="FreeRTOS/list.h"/>
+			<F N="locked_printf.h"/>
+			<F N="os_api.h"/>
+			<F N="PeriodicProcess.h"/>
+			<F N="pid.h"/>
+			<F N="FreeRTOS/portable.h"/>
+			<F N="FreeRTOS/portmacro.h"/>
+			<F N="pressuresens.h"/>
+			<F N="FreeRTOS/projdefs.h"/>
+			<F N="FreeRTOS/queue.h"/>
+			<F N="RTC.h"/>
+			<F N="LCD/SC_13.h"/>
+			<F N="FreeRTOS/semphr.h"/>
+			<F N="SerialInterface.h"/>
+			<F N="avrx/serialio.h"/>
+			<F N="SW_I2CInterface.h"/>
+			<F N="FreeRTOS/task.h"/>
+			<F N="TempRHSens.h"/>
+			<F N="TWImaster/twimaster.h"/>
+			<F N="UserInterface.h"/>
+		</Folder>
+		<Folder
+			Name="Resource Files"
+			Filters="*.ico;*.cur;*.dlg"/>
+		<Folder
+			Name="Bitmaps"
+			Filters="*.bmp">
+			<F N="Font12X16OnlyDigitsAndDot.BMP"/>
+			<F N="Font12X24OnlyDigitsAndDot.BMP"/>
+		</Folder>
+		<Folder
+			Name="Other Files"
+			Filters="">
+			<F N="avrx/avrx.xlb"/>
+			<F N="avrx/avrx_notes.txt"/>
+			<F N="avrx/AvrXFifo_documentation.txt"/>
+			<F N="AvrXserialIO/AvrXSerialIo_documentation.txt"/>
+			<F
+				N="Makefile"
+				Type="Makefile"/>
+			<F N="avrx/README.txt"/>
+		</Folder>
+	</Files>
+</Project>

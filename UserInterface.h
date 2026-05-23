@@ -1,0 +1,543 @@
+#ifndef __USERINTERFACE_H__
+#define __USERINTERFACE_H__
+
+#include <avr/io.h>        // This defers to avr/io.h for GCC
+
+//typedef enum
+//{
+	//DP1_UPPER_ALARM_OFF_LIMIT,
+	//DP1_UPPER_ALARM_ON_LIMIT,
+	//DP1_LOWER_ALARM_OFF_LIMIT,
+	//DP1_LOWER_ALARM_ON_LIMIT,
+	//DP2_UPPER_ALARM_OFF_LIMIT,
+	//DP2_UPPER_ALARM_ON_LIMIT,
+	//DP2_LOWER_ALARM_OFF_LIMIT,
+	//DP2_LOWER_ALARM_ON_LIMIT,
+	//DP3_UPPER_ALARM_OFF_LIMIT,
+	//DP3_UPPER_ALARM_ON_LIMIT,
+	//DP3_LOWER_ALARM_OFF_LIMIT,
+	//DP3_LOWER_ALARM_ON_LIMIT,
+	//TEMP_UPPER_ALARM_OFF_LIMIT,
+	//TEMP_UPPER_ALARM_ON_LIMIT,
+	//TEMP_LOWER_ALARM_OFF_LIMIT,
+	//TEMP_LOWER_ALARM_ON_LIMIT,
+	//RH_UPPER_ALARM_OFF_LIMIT,
+	//RH_UPPER_ALARM_ON_LIMIT,
+	//RH_LOWER_ALARM_OFF_LIMIT,
+	//RH_LOWER_ALARM_ON_LIMIT,
+	//TIME_HOURS,
+	//TIME_MINUTES,
+	//TIME_SECONDS,
+	//DATE_YEAR,
+	//DATE_MONTH,
+	//DATE_DAY,
+	//DISPLAY_INTERVAL,
+	//DISPLAY_MODE,
+	//LOGGING_INTERVAL,
+	//DEVICE_ID,
+	//BROADCAST_INTERVAL,
+	//DP1_OUT_LOW_PRES,
+	//DP1_OUT_HIGH_PRES,
+	//DP2_OUT_LOW_PRES,
+	//DP2_OUT_HIGH_PRES,
+	//TEMP_OUT_LOW_TEMP,
+	//TEMP_OUT_HIGH_TEMP,
+	//RH_OUT_LOW_RH,
+	//RH_OUT_HIGH_RH,
+	//DP1_OUT_LOW_COUNT,
+	//DP1_OUT_HIGH_COUNT,
+	//DP2_OUT_LOW_COUNT,
+	//DP2_OUT_HIGH_COUNT,
+	//TEMP_OUT_LOW_COUNT,
+	//TEMP_OUT_HIGH_COUNT,
+	//RH_OUT_LOW_COUNT,
+	//RH_OUT_HIGH_COUNT,
+	//DP1_UNIT,
+	//DP2_UNIT,
+	//TEMPERATURE_UNIT,
+	//HUMIDITY_UNIT,
+	//DP1_ZERO_ADJ,
+	//DP2_ZERO_ADJ,
+	//TEMP_ZERO_ADJ,
+	//RH_ZERO_ADJ,
+	//SOFT_VERSION,
+	//BUZZER_ON_TIME,
+	//BUZZER_OFF_TIME,
+	//CFG_PASSWORD,
+	//CONFIG_SYSTEM,
+	//SERIAL_BAUD_RATE_VAL,
+	//SERIAL_DATA_STOP_PARITY_VAL,
+	//
+	//DP1_ALARM_SETUP,
+	//DP1_RANGE,
+	//DP1_OUTPUT_TYPE,
+	//DP1_PID_KP,
+	//DP1_PID_TI,
+	//DP1_PID_TD,
+	//DP1_PID_SET_VALUE,
+	//
+	//DP2_ALARM_SETUP,
+	//DP2_RANGE,
+	//DP2_OUTPUT_TYPE,
+	//DP2_PID_KP,
+	//DP2_PID_TI,
+	//DP2_PID_TD,
+	//DP2_PID_SET_VALUE,
+	//
+	//TEMP_ALARM_SETUP,
+	//TEMP_OUTPUT_TYPE,
+	//TEMP_PID_KP,
+	//TEMP_PID_TI,
+	//TEMP_PID_TD,
+	//TEMP_PID_SET_VALUE,
+	//
+	//RH_ALARM_SETUP,
+	//RH_OUTPUT_TYPE,
+	//RH_PID_KP,
+	//RH_PID_TI,
+	//RH_PID_TD,
+	//RH_PID_SET_VALUE,
+	//
+	//TEMP_RH_SENS_TYPE,
+	//BUZZER_DISABLE_TIME,
+	//
+	//
+	//
+	//
+	//CUSTOMER_ID,
+	//SERIAL_NO,
+	//DP1_OUT_POLARITY,
+	//DP2_OUT_POLARITY,
+	//TEMP_OUT_POLARITY,
+	//RH_OUT_POLARITY,
+	//TEMP_HIGH_PID_RH_CASCADE_FACTOR,
+	//TEMP_LOW_PID_RH_CASCADE_FACTOR,
+	//TEMP_HIGH_PID_CASCADE_RH_STATE,
+	//TEMP_LOW_PID_CASCADE_RH_STATE,
+	//RH_HIGH_PID_TEMP_CASCADE_FACTOR,
+	//RH_LOW_PID_TEMP_CASCADE_FACTOR,
+	//RH_HIGH_PID_CASCADE_TEMP_STATE,
+	//RH_LOW_PID_CASCADE_TEMP_STATE,
+	//DP1_PID_STARTUP_PERCENT,
+	//DP2_PID_STARTUP_PERCENT,
+	//TEMP_PID_STARTUP_PERCENT,
+	//RH_PID_STARTUP_PERCENT,
+	//TEMP_HIGH_PID_RH_ADJUST,
+	//TEMP_LOW_PID_RH_ADJUST,
+	//RH_HIGH_PID_TEMP_ADJUST,
+	//RH_LOW_PID_TEMP_ADJUST,
+	////DP1_AREA,
+	////DP2_AREA,
+	//OUTPUT1_MAPPING,
+	//OUTPUT2_MAPPING,
+	//OUTPUT3_MAPPING,
+	//OUTPUT4_MAPPING,
+	//DP1_ZERO_RNG,
+	//DP2_ZERO_RNG,
+	//TEMP_RH_SCAN_TIME,
+	//TEMP_RH_READING_AVERAGE,
+	//PRES_READING_AVERAGE,
+	//DP1_SENS_TYPE,
+	//DP2_SENS_TYPE,
+	//DP1_SENS_MIN,
+	//DP1_SENS_MAX,
+	//DP2_SENS_MIN,
+	//DP2_SENS_MAX,
+	//
+	//DP3_OUT_LOW_PRES,
+	//DP3_OUT_HIGH_PRES,
+	//DP3_OUT_LOW_COUNT,
+	//DP3_OUT_HIGH_COUNT,
+	//DP3_UNIT,
+	//DP3_ZERO_ADJ,
+	//DP3_RANGE,
+	//DP3_ALARM_SETUP,
+	//DP3_OUT_POLARITY,
+	//DP3_ZERO_RNG,
+	//DP3_SENS_TYPE,
+	//DP3_SENS_MIN,
+	//DP3_SENS_MAX,
+	//RTC_ENABLE_DISABLE,
+	////DP3_AREA,
+	//DP1_AREA_TYPE,
+	//DP2_AREA_TYPE,
+	//DP3_AREA_TYPE,
+	//DP1_AREA_LENGTH,
+	//DP2_AREA_LENGTH,
+	//DP3_AREA_LENGTH,
+	//DP1_AREA_WIDTH,
+	//DP2_AREA_WIDTH,
+	//DP3_AREA_WIDTH,
+	//DP1_AREA_RADIOUS,
+	//DP2_AREA_RADIOUS,
+	//DP3_AREA_RADIOUS
+	//
+//}PARAMETER;
+
+typedef enum
+{
+	DP1_UPPER_ALARM_OFF_LIMIT 	= 1,
+	DP1_UPPER_ALARM_ON_LIMIT 	= 2,
+	DP1_LOWER_ALARM_OFF_LIMIT 	= 3,
+	DP1_LOWER_ALARM_ON_LIMIT 	= 4,
+	DP2_UPPER_ALARM_OFF_LIMIT = 5,
+	DP2_UPPER_ALARM_ON_LIMIT 	= 6,
+	DP2_LOWER_ALARM_OFF_LIMIT = 7,
+	DP2_LOWER_ALARM_ON_LIMIT 	= 8,
+	TEMP_UPPER_ALARM_OFF_LIMIT		= 9,
+	TEMP_UPPER_ALARM_ON_LIMIT		= 10,
+	TEMP_LOWER_ALARM_OFF_LIMIT		= 11,
+	TEMP_LOWER_ALARM_ON_LIMIT		= 12,
+	RH_UPPER_ALARM_OFF_LIMIT		= 13,
+	RH_UPPER_ALARM_ON_LIMIT			= 14,
+	RH_LOWER_ALARM_OFF_LIMIT		= 15,
+	RH_LOWER_ALARM_ON_LIMIT			= 16,
+	TIME_HOURS						= 17,
+	TIME_MINUTES					= 18,
+	TIME_SECONDS					= 19,
+	DATE_YEAR						= 20,
+	DATE_MONTH                      = 21,
+	DATE_DAY						= 22,
+	DISPLAY_INTERVAL				= 23,
+	DISPLAY_MODE					= 24,
+	LOGGING_INTERVAL				= 25,
+	DEVICE_ID						= 26,
+	BROADCAST_INTERVAL				= 27,
+	DP1_OUT_LOW_PRES			= 28,
+	DP1_OUT_HIGH_PRES			= 29,
+	DP2_OUT_LOW_PRES			= 30,
+	DP2_OUT_HIGH_PRES         = 31,
+	TEMP_OUT_LOW_TEMP				= 32,
+	TEMP_OUT_HIGH_TEMP				= 33,
+	RH_OUT_LOW_RH					= 34,
+	RH_OUT_HIGH_RH					= 35,
+	DP1_OUT_LOW_COUNT			= 36,
+	DP1_OUT_HIGH_COUNT			= 37,
+	DP2_OUT_LOW_COUNT			= 38,
+	DP2_OUT_HIGH_COUNT		= 39,
+	TEMP_OUT_LOW_COUNT				= 40,
+	TEMP_OUT_HIGH_COUNT             = 41,
+	RH_OUT_LOW_COUNT				= 42,
+	RH_OUT_HIGH_COUNT				= 43,
+	DP1_UNIT				= 44,
+	DP2_UNIT				= 45,
+	TEMPERATURE_UNIT				= 46,
+	HUMIDITY_UNIT					= 47,
+	DP1_ZERO_ADJ				= 48,
+	DP2_ZERO_ADJ				= 49,
+	TEMP_ZERO_ADJ					= 50,
+	RH_ZERO_ADJ                     = 51,
+	SOFT_VERSION					= 52,
+	BUZZER_ON_TIME					= 53,
+	BUZZER_OFF_TIME					= 54,
+	CFG_PASSWORD					= 55,
+	CONFIG_SYSTEM					= 56,
+	SERIAL_BAUD_RATE_VAL			= 57,
+	SERIAL_DATA_STOP_PARITY_VAL		= 58,
+	DP1_RANGE					= 59,
+	DP2_RANGE					= 60,
+	DP1_OUTPUT_TYPE            = 61,
+	DP1_PID_KP					= 62,
+	DP1_PID_TI					= 63,
+	DP1_PID_TD					= 64,
+	DP1_PID_SET_VALUE			= 65,
+	DP2_OUTPUT_TYPE			= 66,
+	DP2_PID_KP				= 67,
+	DP2_PID_TI				= 68,
+	DP2_PID_TD				= 69,
+	DP2_PID_SET_VALUE			= 70,
+	TEMP_OUTPUT_TYPE                = 71,
+	TEMP_PID_KP						= 72,
+	TEMP_PID_TI						= 73,
+	TEMP_PID_TD						= 74,
+	TEMP_PID_SET_VALUE				= 75,
+	RH_OUTPUT_TYPE					= 76,
+	RH_PID_KP						= 77,
+	RH_PID_TI						= 78,
+	RH_PID_TD						= 79,
+	RH_PID_SET_VALUE				= 80,
+	TEMP_RH_SENS_TYPE               = 81,
+	BUZZER_DISABLE_TIME				= 82,
+	DP1_ALARM_SETUP			= 83,
+	DP2_ALARM_SETUP			= 84,
+	TEMP_ALARM_SETUP				= 85,
+	RH_ALARM_SETUP					= 86,
+	CUSTOMER_ID						= 87,
+	SERIAL_NO						= 88,
+	DP1_OUT_POLARITY			= 89,
+	DP2_OUT_POLARITY			= 90,
+	TEMP_OUT_POLARITY            	= 91,
+	RH_OUT_POLARITY					= 92,
+	TEMP_HIGH_PID_RH_CASCADE_FACTOR	= 93,
+	TEMP_LOW_PID_RH_CASCADE_FACTOR	= 94,
+	TEMP_HIGH_PID_CASCADE_RH_STATE	= 95,
+	TEMP_LOW_PID_CASCADE_RH_STATE	= 96,
+	RH_HIGH_PID_TEMP_CASCADE_FACTOR	= 97,
+	RH_LOW_PID_TEMP_CASCADE_FACTOR	= 98,
+	RH_HIGH_PID_CASCADE_TEMP_STATE	= 99,
+	RH_LOW_PID_CASCADE_TEMP_STATE	= 100,
+	DP1_PID_STARTUP_PERCENT         = 101,
+	DP2_PID_STARTUP_PERCENT			= 102,
+	TEMP_PID_STARTUP_PERCENT		= 103,
+	RH_PID_STARTUP_PERCENT			= 104,
+	TEMP_HIGH_PID_RH_ADJUST			= 105,
+	TEMP_LOW_PID_RH_ADJUST			= 106,
+	RH_HIGH_PID_TEMP_ADJUST			= 107,
+	RH_LOW_PID_TEMP_ADJUST			= 108,
+	//DP1_AREA					= 109,
+	//DP2_AREA					= 110,
+	OUTPUT1_MAPPING				    = 111,
+	OUTPUT2_MAPPING				    = 112,
+	OUTPUT3_MAPPING			        = 113,
+	OUTPUT4_MAPPING			        = 114,
+	DP1_ZERO_RNG				    = 115,
+	DP2_ZERO_RNG					= 116,
+	TEMP_RH_SCAN_TIME               = 117,
+	TEMP_RH_READING_AVERAGE         = 118,
+	PRES_READING_AVERAGE            = 119,
+	DP1_SENS_TYPE              = 120,
+	DP2_SENS_TYPE             = 121,
+	DP1_SENS_MIN               = 122,
+	DP1_SENS_MAX               = 123,
+	DP2_SENS_MIN              = 124,
+	DP2_SENS_MAX              = 125,
+	DP3_UPPER_ALARM_OFF_LIMIT= 126,
+	DP3_UPPER_ALARM_ON_LIMIT = 127,
+	DP3_LOWER_ALARM_OFF_LIMIT = 128,
+	DP3_LOWER_ALARM_ON_LIMIT = 129,
+	DP3_OUT_LOW_PRES			= 130,
+	DP3_OUT_HIGH_PRES		= 131,
+	DP3_OUT_LOW_COUNT		= 132,
+	DP3_OUT_HIGH_COUNT		= 133,
+	DP3_UNIT				= 134,
+	DP3_ZERO_ADJ				= 135, 
+	DP3_RANGE				= 136,
+	DP3_ALARM_SETUP			= 137,
+	DP3_OUT_POLARITY			= 138,
+	DP3_ZERO_RNG				= 139,
+	DP3_SENS_TYPE			= 140,
+	DP3_SENS_MIN				= 141,
+	DP3_SENS_MAX				= 142,
+	RTC_ENABLE_DISABLE				= 143,
+	DP3_AREA					= 144,
+	DP1_AREA_TYPE					= 145,
+	DP2_AREA_TYPE					= 146,
+	DP3_AREA_TYPE					= 147,
+	DP1_AREA_LENGTH					= 148,
+	DP2_AREA_LENGTH					= 149,
+	DP3_AREA_LENGTH					= 150,
+	DP1_AREA_WIDTH					= 151,
+	DP2_AREA_WIDTH					= 152,
+	DP3_AREA_WIDTH					= 153,
+	DP1_AREA_RADIOUS				= 154,
+	DP2_AREA_RADIOUS				= 155,
+	DP3_AREA_RADIOUS				= 156,
+	AHU_ID							= 157,
+	AHU_CFM							= 158,
+	AHU_AREA1						= 159,
+	AHU_AREA2						= 160,
+	AHU_AREA3						= 161,
+	
+	IP1_HIGH_NAME					= 162,
+	IP1_LOW_NAME					= 163,
+	IP2_HIGH_NAME					= 164,
+	IP2_LOW_NAME					= 165,
+	IP3_HIGH_NAME					= 166,
+	IP3_LOW_NAME					= 167,
+	IP4_HIGH_NAME					= 168,
+	IP4_LOW_NAME					= 169,
+	OP1_HIGH_NAME					= 170,
+	OP1_LOW_NAME					= 171,
+	OP2_HIGH_NAME					= 172,
+	OP2_LOW_NAME					= 173,
+	OP3_HIGH_NAME					= 174,
+	OP3_LOW_NAME					= 175,
+	OP4_HIGH_NAME					= 176,
+	OP4_LOW_NAME					= 177,
+	TEMP_FIRE_ALM_SET				= 178,
+	TEMP_FIRE_ALM_TIME				= 179,
+	TEMP2_ZERO_ADJ					= 180,
+	TEMP_DIFF_ALARM_LIMIT			= 181,
+	RH2_ZERO_ADJ                     = 182,
+	TEMP_RH2_SENS_TYPE               = 183,
+	
+}PARAMETER;
+
+
+enum baudrates
+{
+   SERIAL_BAUD_1200 = 0,
+   SERIAL_BAUD_2400,
+   SERIAL_BAUD_4800,
+   SERIAL_BAUD_9600, 
+   SERIAL_BAUD_14400,
+   SERIAL_BAUD_19200,
+   SERIAL_BAUD_28800,
+   SERIAL_BAUD_38400,
+   SERIAL_BAUD_57600,
+};
+
+enum databits
+{
+	DATABIT_5 = 0,
+	DATABIT_6,
+	DATABIT_7,
+	DATABIT_8,
+};
+
+enum paritybit
+{
+	SERIAL_PARITY_NONE = 0,
+	SERIAL_PARITY_EVEN,
+	SERIAL_PARITY_ODD
+};
+
+enum stopbits
+{
+	STOPBIT_1 = 0,
+	STOPBIT_2,
+};
+
+#define SERIAL_DATA_BITS_MASK  0x3
+#define SERIAL_DATA_BITS_SHIFT  0
+
+#define SERIAL_STOP_BIT_MASK   0x4
+#define SERIAL_STOP_BIT_SHIFT  2
+
+#define SERIAL_PARITY_MASK   0x18
+#define SERIAL_PARITY_SHIFT  3
+
+#define TEMP_RH_SENS_NONE    0
+#define TEMP_RH_SENS_SHT25   1
+//#define TEMP_RH_SENS_SHT35   2
+#define TEMP_RH_SENS_IDT_HS3100	2
+
+#define PRES_SENS_NONE        0
+#define PRES_SENS_SM4331      1
+#define PRES_SENS_SM9543      2
+#define PRES_SENS_AMS5812     3
+
+#define PRES_AREA_SQUARE      0
+#define PRES_AREA_ROUND       1
+
+#define PARTICAL_SENS_NONE       0
+#define PARTICAL_SENS_SEN55      1
+#define PARTICAL_SENS_ISP7100    2
+#define PARTICAL_SENS_ISP5100    3
+
+#define PARTICAL_SIZE_1_0		0
+#define PARTICAL_SIZE_2_5		1
+#define PARTICAL_SIZE_4_0		2
+#define PARTICAL_SIZE_10_0		3
+
+#define ALARM_DISABLED 0
+#define ALARM_ENB_BUZ_OFF  1
+#define ALARM_ENB_BUZ_ON   2
+
+#define RTC_DISABLED	0
+#define RTC_ENABLED		1
+
+#define OUTPUT_COMPUTER    0
+#define OUTPUT_INPUT1      1
+#define OUTPUT_INPUT1REV   2
+#define OUTPUT_INPUT2      3
+#define OUTPUT_INPUT2REV   4
+#define OUTPUT_INPUT3      5
+#define OUTPUT_INPUT3REV   6
+#define OUTPUT_INPUT4      7
+#define OUTPUT_INPUT4REV   8
+#define OUTPUT_INPUT5      9
+#define OUTPUT_INPUT5REV   10
+//#define OUTPUT_DOOR_INPUT  11
+//#define OUTPUT_DOOR_INPUT_REV   12
+#define OUTPUT_LAST_NO     OUTPUT_INPUT5REV
+
+enum pressureUnit
+{
+	PRESSURE_PSI = 0,
+	PRESSURE_MILIBAR,
+	PRESSURE_PA,
+	PRESSURE_HG_INCH,
+	PRESSURE_H2O_MM,
+	PRESSURE_H2O_INCH,
+	PRESSURE_PSF,
+	PRESSURE_CFM,
+};
+
+enum temperatureUnit
+{
+	TEMPERATURE_DEG_C = 0,
+	TEMPERATURE_DEG_F,
+	TEMPERATURE_DEG_K,
+};
+
+enum displayMode
+{
+	DISP_MODE_ONELINE = 0,
+	DISP_MODE_ALL_PARA,
+};
+
+
+enum humidUnit
+{
+	HUMIDITY_RH = 0,
+};
+
+
+typedef struct
+{
+   PARAMETER id;
+   uint8_t (* priValidationFunction)();
+   uint8_t (* secValidationFunction)();
+   char displayText[21];
+   char * (* parameterHandler)( uint8_t operationType, int16_t * paraValue );
+}PARA_INFO;
+
+void UserInterfaceInit();
+
+void DisplaySensorValues(void);
+
+// returns error code as a function return and read value in paraValue
+uint8_t GetParameter( char paraId, int *paraValue );
+// returns error code as a function return and actual set value in paraValue
+uint8_t SetParameter( char paraId, int *paraValue );
+
+uint8_t GetParameterStr( uint8_t paraId, uint8_t *parastr );
+uint8_t SetParameterStr( uint8_t paraId, uint8_t *parastr );
+
+int GetParameterValue( PARAMETER paraId );
+
+extern unsigned char systemError;
+//extern unsigned char displayPage;
+extern char gu8_inOutput[16][10];
+	
+void UIResourceLock();
+void UIResourceUnlock();
+
+int16_t DP1sensorResolution(void);
+int16_t DP2sensorResolution(void);
+int16_t DP3sensorResolution(void);
+//uint8_t GetDisplayPara(void);
+
+void BuzzerOn();
+void BuzzerOff();
+
+void DisplaySystemError();
+char DisplayDP1(uint8_t error, int16_t value);
+char DisplayDP2(uint8_t error, int16_t value);
+char DisplayDP3(uint8_t error, int16_t value);
+char DisplayTemperature(uint8_t error, int16_t value);
+char DisplayTemperature2(uint8_t error, int16_t value);
+char DisplayHumidity(uint8_t error, int16_t value);
+
+int16_t ConvertToPascal(uint8_t senType, int16_t value, int16_t dpsenResolution, int16_t range1);
+
+char * FormatSystemError( char * str, int16_t value);
+
+char * FormatDP1OneLine( char * str, uint8_t error, int16_t value );
+char * FormatDP2OneLine( char * str, uint8_t error, int16_t value );
+char * FormatDP3OneLine( char * str, uint8_t error, int16_t value );
+char * FormatTemperatureOneLine( char * str, uint8_t error, int16_t value );
+char * FormatHumidityOneLine( char * str, uint8_t error, int16_t value );
+
+#endif

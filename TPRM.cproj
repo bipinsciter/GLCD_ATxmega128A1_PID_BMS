@@ -1,0 +1,353 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
+    <ProjectGuid>b7749fe5-01d6-435d-994b-93f1ab2b7e53</ProjectGuid>
+    <Name>TPRM</Name>
+    <avrdevice>ATmega128</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <AvrProjectType>Importer</AvrProjectType>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>TPRM</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <AsfFrameworkConfig>
+      <framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.42.0" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>200000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200040666</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
+    <avrtoolinterface>ISP</avrtoolinterface>
+    <ResetRule>0</ResetRule>
+    <EraseKey />
+    <avrtoolserialnumber>001D2C881679</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E9702</avrdeviceexpectedsignature>
+    <avrtoolinterfaceclock>125000</avrtoolinterfaceclock>
+    <com_atmel_avrdbg_tool_ispmk2>
+      <ToolOptions>
+        <InterfaceProperties>
+          <IspClock>125000</IspClock>
+        </InterfaceProperties>
+        <InterfaceName>ISP</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
+      <ToolNumber>001D2C881679</ToolNumber>
+      <ToolName>AVRISP mkII</ToolName>
+    </com_atmel_avrdbg_tool_ispmk2>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'default' ">
+    <OutputPath>bin\default\</OutputPath>
+    <ToolchainSettings>
+      <AvrGcc>
+  <avrgcc.common.Device>-mmcu=atmega128 -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega128"</avrgcc.common.Device>
+  <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
+  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+  <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>OS_AVRX</Value>
+      <Value>F_CPU=16000000UL</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
+  <avrgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.6.364\include\</Value>
+    </ListValues>
+  </avrgcc.compiler.directories.IncludePaths>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+  <avrgcc.compiler.miscellaneous.OtherFlags>-gdwarf-2 -std=gnu99</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm.a</Value>
+      <Value>libprintf_min.a</Value>
+      <Value>libc.a</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,-u,vfprintf</avrgcc.linker.miscellaneous.LinkerFlags>
+  <avrgcc.assembler.general.AssemblerFlags>-Wall -gdwarf-2 -std=gnu99                                                                  -DOS_AVRX                                                                                                                                        -DF_CPU=16000000UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall -gdwarf-2 -std=gnu99                                                                  -DOS_AVRX                                                                                                                                        -DF_CPU=16000000UL -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums</avrgcc.assembler.general.AssemblerFlags>
+  <avrgcc.assembler.general.IncludePaths>
+    <ListValues>
+      <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.6.364\include\</Value>
+    </ListValues>
+  </avrgcc.assembler.general.IncludePaths>
+</AvrGcc>
+    </ToolchainSettings>
+    <BuildTarget>all</BuildTarget>
+    <CleanTarget>clean</CleanTarget>
+  </PropertyGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+  <ItemGroup>
+    <Folder Include="LCD" />
+    <Compile Include="LCD\corsiva_12.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\font12x16.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\arial_bold_14.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\Bitmap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\font5X7.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\font6x8.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\ks0xxx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\ks0xxx.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Folder Include="TWImaster" />
+    <Compile Include="TWImaster\twimaster.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TWImaster\twimaster.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="error.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="I2CInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="PressureSens.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TempRHSens.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HardwareInfo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DeviceIO.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eeprom_i2c.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eepromAdr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="RTC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UserInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="os_api.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Folder Include="avrx" />
+    <Compile Include="avrx\avrx-signal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="avrx\avrx.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="avrx\avrx-io.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="avrx\AvrXFifo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="avrx\avrx_eeprom.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_recvmessage.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_semaphores.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_tasking.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_timequeue.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_resetsemaphore.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\avrx_message.S">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx\AvrXFifo.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="DAC7573.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Folder Include="AvrXserialIO" />
+    <Compile Include="AvrXserialIO\AvrXSerialIo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="AvrXserialIO\AvrXBufferedSerial.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="SerialInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="PeriodicProcess.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="locked_printf.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SW_I2CInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Folder Include="I2CMaster" />
+    <Compile Include="I2CMaster\i2cmaster.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="I2CMaster\i2cmaster.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pid.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TPRM.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="I2CInterface.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="PressureSens.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="RTC.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="TempRHSens.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="HardwareInfo.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="DeviceIO.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="eeprom_i2c.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="UserInterface.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="os_api.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="avrx_systemtimer0.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="DAC7573.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="SerialInterface.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="PeriodicProcess.c">
+      <SubType>compile</SubType>
+      <CustomCompilationSetting Condition="'$(Configuration)' == 'default'">
+      </CustomCompilationSetting>
+    </Compile>
+    <Compile Include="locked_printf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SW_I2CInterface.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="PID.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

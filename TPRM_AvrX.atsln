@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "TPRM", "TPRM_6_2(1).cproj", "{B7749FE5-01D6-435D-994B-93F1AB2B7E53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		default|AVR = default|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7749FE5-01D6-435D-994B-93F1AB2B7E53}.default|AVR.ActiveCfg = default|AVR
+		{B7749FE5-01D6-435D-994B-93F1AB2B7E53}.default|AVR.Build.0 = default|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
