@@ -1,5 +1,6 @@
 #include <avr/io.h>        // This defers to avr/io.h for GCC
 #include <stdlib.h>
+#include <math.h>
 #include <avr/wdt.h>
 #include "os_api.h"
 #include "error.h"
@@ -169,6 +170,7 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
 			//}
 			
+			convertedValue = Kalman_Update(&Kalmanfilter[DP1_VAL_INDEX], convertedValue);
 			AveragePara(DP1_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
@@ -188,6 +190,7 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
 			//}
 
+			convertedValue = Kalman_Update(&Kalmanfilter[DP2_VAL_INDEX], convertedValue);
 			AveragePara(DP2_VAL_INDEX, retVal, value, convertedValue );
 		}
 	  
@@ -207,6 +210,7 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
 			//}
 			
+			convertedValue = Kalman_Update(&Kalmanfilter[DP3_VAL_INDEX], convertedValue);
 			AveragePara(DP3_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
@@ -940,7 +944,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 			//}
 		//}
 		//else 
-		if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
+		//if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
 		{
 			if(IsTemperatureEnabled() || IsHumidityEnabled())
 			{
@@ -966,29 +970,34 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value = convertedValue = 0;
 				}
 				
-				if(ignoreCnter[0]<20)
+				convertedValue = Kalman_Update(&Kalmanfilter[TEMPERATURE_VAL_INDEX], convertedValue);
+				
+				//if(convertedValue<4000)
 				{
-					AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-					lastParaValue[0]=convertedValue;
-					ignoreCnter[0]++;
-				}
-				else
-				{
-					if(abs(convertedValue-lastParaValue[0])<200)
+					if(ignoreCnter[0]<10)
 					{
 						AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-						jumpInd[0]=0;
 						lastParaValue[0]=convertedValue;
+						ignoreCnter[0]++;
 					}
 					else
 					{
-						jumpInd[0]++;
-						if(jumpInd[0]>=CONV_IND)
+						if(abs(convertedValue-lastParaValue[0])<300)
 						{
 							AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 							jumpInd[0]=0;
 							lastParaValue[0]=convertedValue;
 						}
+						/*else
+						{
+							jumpInd[0]++;
+							if(jumpInd[0]>=CONV_IND)
+							{
+								AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+								jumpInd[0]=0;
+								lastParaValue[0]=convertedValue;
+							}
+						}*/
 					}
 				}
 			}
@@ -1004,10 +1013,10 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value1 = convertedValue = 0;
 				}
-			
-				//AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
 				
-				if(ignoreCnter[1]<20)
+				convertedValue = Kalman_Update(&Kalmanfilter[HUMIDITY_VAL_INDEX], convertedValue);
+	
+				if(ignoreCnter[1]<10)
 				{
 					AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
 					lastParaValue[1]=convertedValue;
@@ -1015,13 +1024,13 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				}
 				else
 				{
-					if(abs(convertedValue-lastParaValue[1])<400)
+					if(abs(convertedValue-lastParaValue[1])<500)
 					{
 						AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
 						jumpInd[1]=0;
 						lastParaValue[1]=convertedValue;
 					}
-					else
+					/*else
 					{
 						jumpInd[1]++;
 						if(jumpInd[1]>=CONV_IND)
@@ -1030,43 +1039,43 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 							jumpInd[1]=0;
 							lastParaValue[1]=convertedValue;
 						}
-					}
+					}*/
 				}
 			}
 		}
 		//====================================================================================================
-		if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_SHT25 )
-		{
-			if(IsTemperature2Enabled())
-			{
-				//----------------------------------------------------------------------
-				retVal = GetSensorSHT25Temperature(1, &value, &checkSum );
-				
-				// Convert the value to unit
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = value + GetParameterValue(TEMP2_ZERO_ADJ);
-				}
-				else
-				{
-					value = convertedValue = 0;
-				}
-				AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
-	
-				retVal = GetSensorSHT25Humidity(1, &value, &checkSum );
-				
-				// Convert the value to unit
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = value + GetParameterValue(RH2_ZERO_ADJ);
-				}
-				else
-				{
-					value = convertedValue = 0;
-				}
-				AveragePara(HUMIDITY2_VAL_INDEX, retVal, value, convertedValue );
-			}
-		}
+		//if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_SHT25 )
+		//{
+			//if(IsTemperature2Enabled())
+			//{
+				////----------------------------------------------------------------------
+				//retVal = GetSensorSHT25Temperature(1, &value, &checkSum );
+				//
+				//// Convert the value to unit
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = value + GetParameterValue(TEMP2_ZERO_ADJ);
+				//}
+				//else
+				//{
+					//value = convertedValue = 0;
+				//}
+				//AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
+	//
+				//retVal = GetSensorSHT25Humidity(1, &value, &checkSum );
+				//
+				//// Convert the value to unit
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = value + GetParameterValue(RH2_ZERO_ADJ);
+				//}
+				//else
+				//{
+					//value = convertedValue = 0;
+				//}
+				//AveragePara(HUMIDITY2_VAL_INDEX, retVal, value, convertedValue );
+			//}
+		//}
 		//else if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
 		//{
 			//if(IsTemperature2Enabled())
@@ -1097,45 +1106,45 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//AveragePara(HUMIDITY2_VAL_INDEX, retVal, value1, convertedValue );
 			//}	
 		//}
-		else if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
-		{
-			if(IsTemperature2Enabled())
-			{
-				StartSensor_IDT_HS3100(1);
-				
-				#ifdef OS_AVRX
-				AvrXDelay(&tempLoopSleepTimer, 500);
-				#else
-				OSSleep(500);
-				#endif
-				
-				retVal = GetSensorReadings_IDT_HS3100(1, &value, &value1 );
+		//else if( GetParameterValue(TEMP_RH2_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
+		//{
+			//if(IsTemperature2Enabled())
+			//{
+				//StartSensor_IDT_HS3100(1);
+				//
+				//#ifdef OS_AVRX
+				//AvrXDelay(&tempLoopSleepTimer, 500);
+				//#else
+				//OSSleep(500);
+				//#endif
+				//
+				//retVal = GetSensorReadings_IDT_HS3100(1, &value, &value1 );
+//
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = (value * 16500l / 0x3FFF) - 4000 + GetParameterValue(TEMP2_ZERO_ADJ);    /* degree C */
+				//}
+				//else
+				//{
+					//value = convertedValue = 0;
+				//}
+				//AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
+	//
+				//// Convert the value to unit
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = (value1 * 10000l / 0x3FFF) + GetParameterValue(RH2_ZERO_ADJ);
+				//}
+				//else
+				//{
+					//value1 = convertedValue = 0;
+				//}
+				//
+				//AveragePara(HUMIDITY2_VAL_INDEX, retVal, value1, convertedValue );
+			//}
+		//}
 
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = (value * 16500l / 0x3FFF) - 4000 + GetParameterValue(TEMP2_ZERO_ADJ);    /* degree C */
-				}
-				else
-				{
-					value = convertedValue = 0;
-				}
-				AveragePara(TEMPERATURE2_VAL_INDEX, retVal, value, convertedValue );
-	
-				// Convert the value to unit
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = (value1 * 10000l / 0x3FFF) + GetParameterValue(RH2_ZERO_ADJ);
-				}
-				else
-				{
-					value1 = convertedValue = 0;
-				}
-				
-				AveragePara(HUMIDITY2_VAL_INDEX, retVal, value1, convertedValue );
-			}
-		}
-
-		OSSleep(500);
+		OSSleep(1000);
 		
 		//tempDelay = GetParameterValue(TEMP_RH_SCAN_TIME);
 		//tempDelay = tempDelay * 1000;
@@ -1177,7 +1186,8 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 
 static void AveragePara( uint8_t SenNo, uint8_t error, unsigned int rawVal, int convertedVal )
 {
-	convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
+	//convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
+	
 	OSSemaTakeEver(DeviceValueMutex);
 	sensorVal[SenNo].errorCode = error;
 	sensorVal[SenNo].rawValue = rawVal;
