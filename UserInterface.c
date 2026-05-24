@@ -38,7 +38,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     201
+#define SOFTWARE_VERSION                     202
 
 #define TRUE 1
 #define FALSE 0
