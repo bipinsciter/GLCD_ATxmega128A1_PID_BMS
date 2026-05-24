@@ -39,14 +39,13 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
-#ifndef DISPFONT72_H
-#define DISPFONT72_H
+#ifndef DISPFONT_H
+#define DISPFONT_H
 
-#define DISPFONT72_WIDTH 10
-#define DISPFONT72_HEIGHT 73
+#define DISPFONT_WIDTH 10
+#define DISPFONT_HEIGHT 73
 
-static uint8_t const DispFont72[] PROGMEM = {
-	
+const uint8_t DispFont[] PROGMEM = {
     0x91, 0xC1, // size
     0x0A, // width
     0x49, // height

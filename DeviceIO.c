@@ -794,6 +794,10 @@ void GetInput( uint8_t * retVal )
 
 //static OSSemaMutex TempRHMutex;
 
+#define CONV_IND	40
+uint8_t jumpInd[4] = {0};
+int lastParaValue[4] = {0};
+	
 uint16_t tempDelay = 1000;
 
 #ifdef OS_AVRX
@@ -807,7 +811,8 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 	uint8_t retVal = -1, checkSum;
 	unsigned int value, value1;
 	int convertedValue;
-   
+    static uint8_t ignoreCnter[2]={0};
+	
     wdt_reset();			//Serve Watchdog Timer
 	
 	#ifdef OS_AVRX
@@ -834,40 +839,71 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 			alarmOut.alarm.door=0;
 		}
 		
-		if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT25 )
-		{
-			if (IsTemperatureEnabled())
-			{   
-				retVal = GetSensorSHT25Temperature(0, &value, &checkSum );
-			
-				// Convert the value to unit
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = value + GetParameterValue(TEMP_ZERO_ADJ);
-				}
-				else
-				{
-					value = convertedValue = 0;
-				}
-				AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-			}
-
-			if (IsHumidityEnabled())
-			{  
-				retVal = GetSensorSHT25Humidity(0, &value, &checkSum );
-			
-				// Convert the value to unit
-				if ( retVal == ERROR_OK )
-				{
-					convertedValue = value + GetParameterValue(RH_ZERO_ADJ);
-				}
-				else
-				{
-					value = convertedValue = 0;
-				}
-				AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
-			}
-		}
+		//if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT25 )
+		//{
+			//if (IsTemperatureEnabled())
+			//{   
+				//retVal = GetSensorSHT25Temperature(0, &value, &checkSum );
+			//
+				//// Convert the value to unit
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = value + GetParameterValue(TEMP_ZERO_ADJ);
+				//}
+				//else
+				//{
+					//value = convertedValue = 0;
+				//}
+//
+				//if(abs(convertedValue-lastParaValue[0])<200)
+				//{
+					//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+					//jumpInd[0]=0;
+					//lastParaValue[0]=convertedValue;
+				//}
+				//else
+				//{
+					//jumpInd[0]++;
+					//if(jumpInd[0]>=CONV_IND)
+					//{
+						//jumpInd[0]=0;
+						//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+					//}
+				//}
+			//}
+//
+			//if (IsHumidityEnabled())
+			//{  
+				//retVal = GetSensorSHT25Humidity(0, &value, &checkSum );
+			//
+				//// Convert the value to unit
+				//if ( retVal == ERROR_OK )
+				//{
+					//convertedValue = value + GetParameterValue(RH_ZERO_ADJ);
+				//}
+				//else
+				//{
+					//value = convertedValue = 0;
+				//}
+				////AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+				//
+				//if(abs(convertedValue-lastParaValue[1])<400)
+				//{
+					//AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+					//jumpInd[1]=0;
+					//lastParaValue[1]=convertedValue;
+				//}
+				//else
+				//{
+					//jumpInd[1]++;
+					//if(jumpInd[1]>=CONV_IND)
+					//{
+						//jumpInd[1]=0;
+						//AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+					//}
+				//}
+			//}
+		//}
 		//else if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_SHT35 )
 		//{ 
 			//if(IsTemperatureEnabled() || IsHumidityEnabled())
@@ -903,7 +939,8 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
 			//}
 		//}
-		else if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
+		//else 
+		if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
 		{
 			if(IsTemperatureEnabled() || IsHumidityEnabled())
 			{
@@ -928,11 +965,36 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				{
 					value = convertedValue = 0;
 				}
-				AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+				
+				if(ignoreCnter[0]<20)
+				{
+					AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+					lastParaValue[0]=convertedValue;
+					ignoreCnter[0]++;
+				}
+				else
+				{
+					if(abs(convertedValue-lastParaValue[0])<200)
+					{
+						AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+						jumpInd[0]=0;
+						lastParaValue[0]=convertedValue;
+					}
+					else
+					{
+						jumpInd[0]++;
+						if(jumpInd[0]>=CONV_IND)
+						{
+							AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+							jumpInd[0]=0;
+							lastParaValue[0]=convertedValue;
+						}
+					}
+				}
 			}
 		
 			if (IsHumidityEnabled())
-			{  /* Timer * 3 */
+			{  
 				// Convert the value to unit
 				if ( retVal == ERROR_OK )
 				{
@@ -943,7 +1005,33 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value1 = convertedValue = 0;
 				}
 			
-				AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
+				//AveragePara(HUMIDITY_VAL_INDEX, retVal, value1, convertedValue );
+				
+				if(ignoreCnter[1]<20)
+				{
+					AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+					lastParaValue[1]=convertedValue;
+					ignoreCnter[1]++;
+				}
+				else
+				{
+					if(abs(convertedValue-lastParaValue[1])<400)
+					{
+						AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+						jumpInd[1]=0;
+						lastParaValue[1]=convertedValue;
+					}
+					else
+					{
+						jumpInd[1]++;
+						if(jumpInd[1]>=CONV_IND)
+						{
+							AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+							jumpInd[1]=0;
+							lastParaValue[1]=convertedValue;
+						}
+					}
+				}
 			}
 		}
 		//====================================================================================================
@@ -1047,7 +1135,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 			}
 		}
 
-		OSSleep(250);
+		OSSleep(500);
 		
 		//tempDelay = GetParameterValue(TEMP_RH_SCAN_TIME);
 		//tempDelay = tempDelay * 1000;
