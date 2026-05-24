@@ -133,7 +133,7 @@
     </ToolchainSettings>
     <BuildTarget>all</BuildTarget>
     <CleanTarget>clean</CleanTarget>
-    <OutputFileName>TPRM_V2_2</OutputFileName>
+    <OutputFileName>TPRM_V2_3</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputType>Executable</OutputType>
   </PropertyGroup>
@@ -272,6 +272,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="LCD\font6x8.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\font_arial_narrow_bold_58.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LCD\font_arial_narrow_bold_72.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="LCD\ks0xxx.h">

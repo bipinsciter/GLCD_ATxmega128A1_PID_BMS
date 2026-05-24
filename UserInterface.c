@@ -29,7 +29,9 @@
 //#include "font_arial_narrow_bold_72.h"
 #include "Font_Courier_14_Bold.h"
 #include "FontVerdana10x24.h"    //Font12x16
+#include "font_arial_narrow_bold_72.h"
 #include "font_arial_narrow_bold_58.h"
+//#include "font_arial_narrow_bold_45.h"
 #include "font6x8.h"      //Font6x8
 #include "Arial18Bold.h"      //
 
@@ -38,7 +40,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     202
+#define SOFTWARE_VERSION                     203
 
 #define TRUE 1
 #define FALSE 0
@@ -1190,7 +1192,7 @@ static void DrawTable(void)
 	//ks0xxx_DrawVertLine(80, 16, GLCD_PIXEL_Y-16, BLACK);
 	//ks0xxx_DrawVertLine(160, 16, GLCD_PIXEL_Y-16, BLACK);
 
-	ks0xxx_DrawHoriLine(0, 20, GLCD_PIXEL_X-1, BLACK);
+	/*ks0xxx_DrawHoriLine(0, 20, GLCD_PIXEL_X-1, BLACK);
 	ks0xxx_DrawHoriLine(0, 60, GLCD_PIXEL_X-81, BLACK);
 	ks0xxx_DrawHoriLine(0, 100, GLCD_PIXEL_X-81, BLACK);
 	ks0xxx_DrawHoriLine(0, 140, GLCD_PIXEL_X-1, BLACK);
@@ -1200,6 +1202,11 @@ static void DrawTable(void)
 	ks0xxx_FillRect(0,100,GLCD_PIXEL_X-81,15,BLACK);
 	ks0xxx_FillRect(160,20,GLCD_PIXEL_X-161,15,BLACK);
 	ks0xxx_FillRect(160,82,GLCD_PIXEL_X-161,17,BLACK);
+	*/
+	
+	ks0xxx_FillRect(0,0,GLCD_PIXEL_X-1,18,BLACK);
+	ks0xxx_FillRect(0,120,(GLCD_PIXEL_X/2)-1,18,BLACK);
+	ks0xxx_FillRect(140,80,GLCD_PIXEL_X-140-1,18,BLACK);
 }
 
 static void StartDisplaySensorValues(void)
@@ -1207,7 +1214,7 @@ static void StartDisplaySensorValues(void)
 	OSSemaTakeEver(UIMutex);
 	uc1638_FillScreen(BLANK1);
 	DrawTable();
-	ShowFixText();
+	//ShowFixText();
 	OSSemaGive(UIMutex);
 	
 	LCDControl = SENSOR_VALUES;
@@ -1335,7 +1342,7 @@ void DisplaySensorValues(void)
 		
 		noSystemErrDisp = DisplayDP1(errorCode, value1);
 		//---------------------------------------------------------------------
-		GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
+		/*GetPareValue(DP2_VAL_INDEX, &senVal);//GetDP2( &senVal );
 		if( abs(senVal.convertedValue-(DP2_SENSOR_RESOLUTION_SM9543 / 2)) < GetParameterValue( DP2_ZERO_RNG ))
 		senVal.convertedValue = (DP2_SENSOR_RESOLUTION_SM9543/2);
 		//noSystemErrDisp = DisplayDP2(senVal.errorCode, senVal.convertedValue);
@@ -1390,6 +1397,7 @@ void DisplaySensorValues(void)
 		}
 		
 		noSystemErrDisp = DisplayDP3(errorCode, value1);	
+		*/
 		//---------------------------------------------------------------------
 		GetPareValue(HUMIDITY_VAL_INDEX, &senVal);//GetHumidity( &senVal );
 		
@@ -1446,7 +1454,7 @@ void DisplaySensorValues(void)
 		
 		noSystemErrDisp = DisplayTemperature(errorCode, value1);
 		//---------------------------------------------------------------------
-		if(IsTemperature2Enabled())
+		/*if(IsTemperature2Enabled())
 		{	
 			ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, BLACK);
 			
@@ -1520,16 +1528,17 @@ void DisplaySensorValues(void)
 				}
 			}
 			PrintLineInBox(LEFT,164,GLCD_PIXEL_X-1,144,displayStr);
-		}
+		}*/
 		//---------------------------------------------------------------------
 		if(!noSystemErrDisp && (IsRTCEnabled() || (systemError!= ERROR_OK)))
 		{
 			DisplaySystemError(systemError);
 		}
 		//--------------------------------------------------------------------
-		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, BLACK);	
+		/*ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, BLACK);	
 		ShowSetValue();
 		ShowIOValue();		
+		*/
 	}
 }
 
@@ -1724,7 +1733,7 @@ void DisplaySystemError(void)
 		
 		FormatSystemError( displayStr, systemError);
 		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
-		PrintLineInBox(LEFT,84,160,120,displayStr);
+		PrintLineInBox(LEFT,5,GLCD_PIXEL_X/2,145,displayStr);
 		
 		OSSemaGive(UIMutex);
 	}
@@ -1748,27 +1757,27 @@ char DisplayDP1(uint8_t error, int16_t value)
 		  
 		if(!displayPage)
 		{
-			locked_sprintf_P( displayStr, PSTR("D1(%S)"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("DP1(%S)"), formatedUnit);
 		}
 		else if(displayPage==1)
 		{
-			locked_sprintf_P( displayStr, PSTR("D1(%S)U"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("DP1(%S)U"), formatedUnit);
 		}
 		else if(displayPage==2)
 		{
-			locked_sprintf_P( displayStr, PSTR("D1(%S)L"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("DP1(%S)L"), formatedUnit);
 		}
 		else
 		{
-			locked_sprintf_P( displayStr, PSTR("D1(%S)P"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("DP1(%S)P"), formatedUnit);
 		}
 		//locked_sprintf_P( displayStr, PSTR("DP1(%S)"), formatedUnit);
-		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
-		PrintLineInBox(LEFT,2,80,24,displayStr);
+		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, WHITE);
+		PrintLineInBox(LEFT,5,GLCD_PIXEL_X/2,0,displayStr);
 		
 		locked_sprintf_P( displayStr, PSTR("%s"), formatedValue );
-		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
-		PrintLineInBox(LEFT,2,80,40,displayStr);
+		ks0xxx_SelectFont(DispFont72, ks0xxx_ReadFontData, BLACK);
+		PrintLineInBox(LEFT,5,GLCD_PIXEL_X/2,40,displayStr);
 
 		OSSemaGive(UIMutex);
 	}
@@ -1882,27 +1891,27 @@ char DisplayTemperature(uint8_t error, int16_t value)
 		
 		if(!displayPage)
 		{
-			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("TEMP(%S)"), formatedUnit);
 		}
 		else if(displayPage==1)
 		{
-			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)U"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("TEMP(%S)U"), formatedUnit);
 		}
 		else if(displayPage==2)
 		{
-			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)L"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("TEMP(%S)L"), formatedUnit);
 		}
 		else
 		{
-			locked_sprintf_P( displayStr, PSTR("PrTMP(%S)P"), formatedUnit);
+			locked_sprintf_P( displayStr, PSTR("TEMP(%S)P"), formatedUnit);
 		}
 
-		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
-		PrintLineInBox(LEFT,84,160,24,displayStr);
+		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, WHITE);
+		PrintLineInBox(LEFT,150,GLCD_PIXEL_X-1,0,displayStr);
       
 		locked_sprintf_P( displayStr, PSTR("%s"), formatedValue );
-		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
-		PrintLineInBox(LEFT,84,160,40,displayStr);
+		ks0xxx_SelectFont(DispFont, ks0xxx_ReadFontData, BLACK);
+		PrintLineInBox(LEFT,150,GLCD_PIXEL_X-1,25,displayStr);
 	  
 		OSSemaGive(UIMutex);
 	}
@@ -1986,28 +1995,28 @@ char DisplayHumidity(uint8_t error, int16_t value)
 		//{
 			if(!displayPage)
 			{
-				locked_sprintf_P( displayStr, PSTR("PrRH(%S)"), formatedUnit);
+				locked_sprintf_P( displayStr, PSTR("RH(%S)"), formatedUnit);
 			}
 			else if(displayPage==1)
 			{
-				locked_sprintf_P( displayStr, PSTR("PrRH(%S)U"), formatedUnit);
+				locked_sprintf_P( displayStr, PSTR("RH(%S)U"), formatedUnit);
 			}
 			else if(displayPage==2)
 			{
-				locked_sprintf_P( displayStr, PSTR("PrRH(%S)L"), formatedUnit);
+				locked_sprintf_P( displayStr, PSTR("RH(%S)L"), formatedUnit);
 			}
 			else
 			{
-				locked_sprintf_P( displayStr, PSTR("PrRH(%S)P"), formatedUnit);
+				locked_sprintf_P( displayStr, PSTR("RH(%S)P"), formatedUnit);
 			}
 		//}
 
-		ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
-		PrintLineInBox(LEFT,84,160,64,displayStr);
+		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, WHITE);
+		PrintLineInBox(LEFT,150,GLCD_PIXEL_X-1,80,displayStr);
 
 		locked_sprintf_P( displayStr, PSTR("%s"), formatedValue );
-		ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, BLACK);
-		PrintLineInBox(LEFT,84,160,80,displayStr);
+		ks0xxx_SelectFont(DispFont, ks0xxx_ReadFontData, BLACK);
+		PrintLineInBox(LEFT,150,GLCD_PIXEL_X-1,105,displayStr);
 		
 		OSSemaGive(UIMutex);
 	}
@@ -2231,7 +2240,7 @@ static void FormatTemperature(int16_t value)
          result = value / 100.0;
       }
 
-      dtostrf( result, sizeof(formatedValue)-1, 2, formatedValue);
+      dtostrf( result, sizeof(formatedValue)-1, 1, formatedValue);
       strcpy( formatedValue, strtrim(formatedValue));
    }
    return;
@@ -2248,7 +2257,7 @@ static void FormatHumidity(int16_t value)
    {
       formatedUnit = PSTR("%");
       result = value / 100.0;
-      dtostrf( result, sizeof(formatedValue)-1, 2, formatedValue);
+      dtostrf( result, sizeof(formatedValue)-1, 1, formatedValue);
       strcpy( formatedValue, strtrim(formatedValue));
    }
    return;
@@ -2368,8 +2377,8 @@ char * FormatSystemError( char * str, int16_t value )
 					locked_sprintf_P( str, PSTR("RTC ERR"));
 				}
 				
-				ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
-				PrintLineInBoxWOClear(LEFT,84,160,104,"CLOCK");
+				ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, WHITE);
+				PrintLineInBox(LEFT,5,GLCD_PIXEL_X/2,125,"CLOCK");
 			}
 			else
 			{
@@ -2379,8 +2388,8 @@ char * FormatSystemError( char * str, int16_t value )
 		
 		if((dispValSel == (char)1) && ( value != ERROR_OK ))
 		{
-			ks0xxx_SelectFont(Font6x8, ks0xxx_ReadFontData, WHITE);
-			PrintLineInBoxWOClear(LEFT,84,160,104,"SYS ERR");
+			ks0xxx_SelectFont(ARIAL18BOLD, ks0xxx_ReadFontData, WHITE);
+			PrintLineInBoxWOClear(LEFT,5,GLCD_PIXEL_X/2,125,"SYS ERR");
 			locked_sprintf_P( str, PSTR("%d"), value );
 		}
 		else

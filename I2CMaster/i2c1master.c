@@ -65,13 +65,13 @@ void sw_i2c1_init(void)
 unsigned char sw_i2c1_start(unsigned char addr)
 {
 	SDA_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SDA_LOW;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_LOW;
-	_delay_us(100);
+	_delay_us(50);
 
    return sw_i2c1_write(addr);    // write address
 }
@@ -86,13 +86,13 @@ unsigned char sw_i2c1_start(unsigned char addr)
 unsigned char sw_i2c1_rep_start(unsigned char addr)
 {
 	SDA_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SDA_LOW;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_LOW;
-	_delay_us(100);
+	_delay_us(50);
 	
     return sw_i2c1_write( addr ); // write address
 }
@@ -127,11 +127,11 @@ unsigned char sw_i2c1_start_wait(unsigned char addr)
 void sw_i2c1_stop(void)
 {
 	SDA_LOW;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SDA_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 }
 
 /*************************************************************************
@@ -155,27 +155,27 @@ unsigned char sw_i2c1_write( unsigned char data )
 		else
 			SDA_LOW;   // sbi SDA_DDR,SDA	;force SDA low
 
-		_delay_us(100);
+		_delay_us(50);
 
 		SCL_HIGH;  // release SCL
-		_delay_us(100);
+		_delay_us(50);
 		SCL_LOW;   // sbi SCL_DDR,SCL	;force SCL low
-		_delay_us(100);
+		_delay_us(50);
 		data = data << 1;
 	}
    
 	SDA_DIR_IN;
    
-	_delay_us(100);
+	_delay_us(50);
 
 	SCL_HIGH;  // release SCL
-	_delay_us(100);
+	_delay_us(50);
 	i = (SDA_SENSE)? 1: 0;
 	SCL_LOW;
 	
 	SDA_DIR_OUT;
 	
-	_delay_us(100);
+	_delay_us(50);
 	
 	return i;
 }
@@ -199,13 +199,13 @@ unsigned char sw_i2c1_read(unsigned char ack)
 	{
 		SCL_HIGH;
 		res<<= 1;
-		_delay_us(100);
+		_delay_us(50);
 
 		if(SDA_SENSE) res |= 0x01;
 
-		_delay_us(100);
+		_delay_us(50);
 		SCL_LOW;
-		_delay_us(100);
+		_delay_us(50);
 	}
 	
 	SDA_DIR_OUT;
@@ -215,10 +215,10 @@ unsigned char sw_i2c1_read(unsigned char ack)
 	else
 		SDA_LOW; // Send NO ACK
 
-	_delay_us(100);
+	_delay_us(50);
 
 	SCL_HIGH;
-	_delay_us(100);
+	_delay_us(50);
 	SCL_LOW;
 	
 	return res;

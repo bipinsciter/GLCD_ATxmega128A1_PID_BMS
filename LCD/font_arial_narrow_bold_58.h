@@ -45,7 +45,9 @@
 #define DISPFONT_WIDTH 10
 #define DISPFONT_HEIGHT 43
 
-const uint8_t DispFont[] PROGMEM = {
+//const uint8_t DispFont[] PROGMEM = {
+static uint8_t const DispFont[] PROGMEM = {
+
     0x07, 0x41, // size
     0x0A, // width
     0x2B, // height
