@@ -70,8 +70,8 @@ unsigned char IsParticalSensorEnabled()
 
 unsigned char IsLCDDisplay()
 {
-//   return TRUE;
-   return ((~OSReadEEPromWord((unsigned int *)EA_CONFIG_SYSTEM)) & LCD_DISPLAY_ENB )? 1: 0;
+   return TRUE;
+//   return ((~OSReadEEPromWord((unsigned int *)EA_CONFIG_SYSTEM)) & LCD_DISPLAY_ENB )? 1: 0;
 }
 
 unsigned char IsAlarmEnabled()
