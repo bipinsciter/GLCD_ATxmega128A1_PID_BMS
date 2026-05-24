@@ -38,7 +38,7 @@
 #include "rtc.h" 
 #include "pid.h"
 
-#define SOFTWARE_VERSION                     200
+#define SOFTWARE_VERSION                     201
 
 #define TRUE 1
 #define FALSE 0
@@ -155,8 +155,8 @@
 #define MIN_BUZZER_OFF_TIME                   0    
 #define MIN_BUZZER_DISABLE_TIME               (-1)
 #define MIN_DP1_PID_STARTUP_PERCENT           0
-#define MIN_DP1_PID_KP                   0
-#define MIN_DP1_PID_TI                   0
+#define MIN_DP1_PID_KP                   1
+#define MIN_DP1_PID_TI                   1
 #define MIN_DP1_PID_TD                   0
 #define MIN_DP2_PID_STARTUP_PERCENT           0
 #define MIN_DP2_PID_KP                  1

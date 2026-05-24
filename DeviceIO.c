@@ -147,11 +147,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 	Kalman_Init(&Kalmanfilter[DP2_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 	Kalman_Init(&Kalmanfilter[DP3_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
 
-	//convertedValue = DACWriteOutValue( DP1_ANALOG_OUT, 1024 );
-	//convertedValue = DACWriteOutValue( DP2_ANALOG_OUT, 2048 );
-	//convertedValue = DACWriteOutValue( TEMP_ANALOG_OUT, 3072 );
-	//convertedValue = DACWriteOutValue( RH_ANALOG_OUT, 4096 );
-	
 	while (1)
 	{
 		//wdt_reset();			//Serve Watchdog Timer

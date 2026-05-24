@@ -15,7 +15,7 @@
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <ToolchainFlavour>Native</ToolchainFlavour>
-    <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
+    <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -52,7 +52,7 @@
     <avrtoolinterface>PDI</avrtoolinterface>
     <ResetRule>0</ResetRule>
     <EraseKey />
-    <avrtoolserialnumber>498586270187</avrtoolserialnumber>
+    <avrtoolserialnumber>J42700044083</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E974C</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_ispmk2>
       <ToolOptions>
@@ -61,7 +61,7 @@
         <InterfaceName>PDI</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
-      <ToolNumber>498586270187</ToolNumber>
+      <ToolNumber>409138236984</ToolNumber>
       <ToolName>AVRISP mkII</ToolName>
     </com_atmel_avrdbg_tool_ispmk2>
     <com_atmel_avrdbg_tool_atmelice>
@@ -133,7 +133,7 @@
     </ToolchainSettings>
     <BuildTarget>all</BuildTarget>
     <CleanTarget>clean</CleanTarget>
-    <OutputFileName>TPRM_V2_0</OutputFileName>
+    <OutputFileName>TPRM_V2_1</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputType>Executable</OutputType>
   </PropertyGroup>

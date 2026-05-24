@@ -184,8 +184,6 @@ void PIDLoopControl()
             else
 			{  // Divide by 100 is because of temprature unit
 	    	   tempPIDOutput = (long)tempPIDKp * (error + (long)tempPIDTd*deltaError/100 + (tempSum * 10 /tempPIDTi))/100;
-			   //tempPIDOutput = (((long)tempPIDKp * error) + ((long)tempPIDTd*(deltaError/100)) + ((tempSum*(tempPIDTi/10))))/100;
-			   
 	    	   if( tempPIDOutput < 0 )
 	    	      tempPIDOutput = 0;
 	    	   if( tempPIDOutput > DAC_CNT_RANGE )
@@ -211,7 +209,6 @@ void PIDLoopControl()
     {
         tempRHCascadeError = 0;  
     }
-	//------------------------------------------------------------------------------------------------------------------------
     if( GetParameterValue(RH_OUTPUT_TYPE) == 2 && IsHumidityEnabled() )
 	{ 
 	    // load and check for change of Kp, Ki and Kd parameters
@@ -228,7 +225,7 @@ void PIDLoopControl()
 		{
  		   rhSum = (float)rhSum * GetParameterValue(RH_PID_TI) / rhPIDTi;
 	       rhPIDTi = GetParameterValue(RH_PID_TI);
-		   rhSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * rhPIDTi / rhPIDKp;  
+		    rhSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * rhPIDTi / rhPIDKp;  
 		}
 		rhPIDTd = GetParameterValue(RH_PID_TD);
 
@@ -298,8 +295,6 @@ void PIDLoopControl()
             else
 			{
                 rhPIDOutput = (long)rhPIDKp * (error + (long)rhPIDTd*deltaError/100 + (rhSum * 10 /rhPIDTi))/100;
-				//rhPIDOutput = (((long)rhPIDKp * error) + ((long)rhPIDTd*(deltaError/100)) + ((rhSum*(rhPIDTi/10))))/100;
-				
                 if( rhPIDOutput < 0 )
                     rhPIDOutput = 0;
                 if( rhPIDOutput > DAC_CNT_RANGE )
@@ -325,21 +320,20 @@ void PIDLoopControl()
      {
          rhTempCascadeError = 0;  
      }
-	 //------------------------------------------------------------------------------------------------------------------------
+
      if( GetParameterValue(DP2_OUTPUT_TYPE) == 2 && IsDP2Enabled() )
 	 { 
 	    // load and check for change of Kp, Ki and Kd parameters
 	    // Calculate I sum limits
 	    // DAC_CNT_RANGE = PIDKp * Sum / (10 * PIdTi)
 	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
-		if( diffPresPIDKp != GetParameterValue(DP2_PID_KP))
+      if( diffPresPIDKp != GetParameterValue(DP2_PID_KP))
 		{
 			diffPresSum = (float)diffPresSum * diffPresPIDKp / GetParameterValue(DP2_PID_KP);
 		    diffPresPIDKp = GetParameterValue(DP2_PID_KP);
 		    diffPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * diffPresPIDTi / diffPresPIDKp;  
 		}
-		
-		if( diffPresPIDTi != GetParameterValue(DP2_PID_TI))
+      if( diffPresPIDTi != GetParameterValue(DP2_PID_TI))
 		{
 			diffPresSum = (float)diffPresSum * GetParameterValue(DP2_PID_TI) / diffPresPIDTi ;
 		    diffPresPIDTi = GetParameterValue(DP2_PID_TI);
@@ -362,12 +356,8 @@ void PIDLoopControl()
     		   diffPresSum = 0;
     	    if( diffPresSum > diffPresSumLimit )
     		   diffPresSum = diffPresSumLimit;
-			   
     	    diffPresPIDOutput = (long)diffPresPIDKp * (error + (long)diffPresPIDTd*deltaError/100 + (diffPresSum*10/diffPresPIDTi))/100;
-			//diffPresPIDOutput = (((long)diffPresPIDKp * error) + ((long)diffPresPIDTd*(deltaError/100)) + ((diffPresSum*(diffPresPIDTi/10))))/100;
-			
-    		//diffPresLastError = error;
-			
+    		diffPresLastError = error;
     	    if( diffPresPIDOutput < 0 )
     		   diffPresPIDOutput = 0;
     	    if( diffPresPIDOutput > DAC_CNT_RANGE )
@@ -389,7 +379,6 @@ void PIDLoopControl()
         if( error != ERROR_OK )
            systemError = error;
     }
-	//------------------------------------------------------------------------------------------------------------------------
     if( GetParameterValue(DP1_OUTPUT_TYPE) == 2 && IsDP1Enabled() )
 	{ 
 	    // load and check for change of Kp, Ki and Kd parameters
@@ -398,13 +387,13 @@ void PIDLoopControl()
 	    // Sum = DAC_CNT_RANGE * PID_MAX_VOLT * PidTi / PIDKp
         if( absPresPIDKp != GetParameterValue(DP1_PID_KP))
 		{
-		   absPresSum = (float)absPresSum * absPresPIDKp / GetParameterValue(DP1_PID_KP);
+		   absPresSum = absPresSum * absPresPIDKp / GetParameterValue(DP1_PID_KP);
 		   absPresPIDKp = GetParameterValue(DP1_PID_KP);
 	       absPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * absPresPIDTi / absPresPIDKp;  
 		}
         if( absPresPIDTi != GetParameterValue(DP1_PID_TI))
 		{
-		   absPresSum = (float)absPresSum * GetParameterValue(DP1_PID_TI) / absPresPIDTi;
+		   absPresSum = absPresSum * GetParameterValue(DP1_PID_TI) / absPresPIDTi;
 		   absPresPIDTi = GetParameterValue(DP1_PID_TI);
 	       absPresSumLimit = DAC_CNT_RANGE_L * PID_MAX_VOLT * absPresPIDTi / absPresPIDKp;  
 		}
@@ -413,7 +402,7 @@ void PIDLoopControl()
 	    // Get/calculate set points
 	    // calculate error
 	    // error = SP - AV
-	   GetPareValue(DP1_VAL_INDEX, &sensValue);//GetDP1(&sensValue);
+		GetPareValue(DP1_VAL_INDEX, &sensValue);//GetDP1(&sensValue);
        if( sensValue.errorCode == ERROR_OK )
        {
     		error = GetParameterValue(DP1_PID_SET_VALUE) - sensValue.convertedValue;
@@ -425,15 +414,8 @@ void PIDLoopControl()
     		   absPresSum = 0;
     	    if( absPresSum > absPresSumLimit )
     		   absPresSum = absPresSumLimit;
-			   
     	    absPresPIDOutput = (long)absPresPIDKp * (error + (long)absPresPIDTd*deltaError/100 + (absPresSum*10/absPresPIDTi))/100;
-			//absPresPIDOutput = (((long)absPresPIDKp * error) + ((long)absPresPIDTd*(deltaError/100)) + ((absPresSum*(absPresPIDTi/10))))/100;
-			
-			
-			//absPresPIDOutput = ((long)absPresPIDKp * (error/100)) + ((long)absPresPIDTd*(deltaError/100)) + ((absPresSum/100)*absPresPIDTi);
-    		
-			//absPresLastError = error;
-			
+    		absPresLastError = error;
     	    if( absPresPIDOutput < 0 )
     		   absPresPIDOutput = 0;
     	    if( absPresPIDOutput > DAC_CNT_RANGE )
