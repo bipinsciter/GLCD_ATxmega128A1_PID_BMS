@@ -170,7 +170,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval1=sensorVal[DP1_VAL_INDEX].convertedValue;
 			//}
 			
-			convertedValue = Kalman_Update(&Kalmanfilter[DP1_VAL_INDEX], convertedValue);
 			AveragePara(DP1_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
@@ -190,7 +189,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval2=sensorVal[DP2_VAL_INDEX].convertedValue;
 			//}
 
-			convertedValue = Kalman_Update(&Kalmanfilter[DP2_VAL_INDEX], convertedValue);
 			AveragePara(DP2_VAL_INDEX, retVal, value, convertedValue );
 		}
 	  
@@ -210,7 +208,6 @@ void DEVICEIO_FUNC_NAME( void * taskPara )
 				//lastval3=sensorVal[DP3_VAL_INDEX].convertedValue;
 			//}
 			
-			convertedValue = Kalman_Update(&Kalmanfilter[DP3_VAL_INDEX], convertedValue);
 			AveragePara(DP3_VAL_INDEX, retVal, value, convertedValue );
 		}
 		
@@ -798,6 +795,49 @@ void GetInput( uint8_t * retVal )
 
 //static OSSemaMutex TempRHMutex;
 
+#define WINDOW_SIZE  9   // must be odd, <= 39
+
+static int buffer[WINDOW_SIZE];
+static int sorted[WINDOW_SIZE];   // temp buffer (global, no stack use)
+
+static unsigned char index = 0;
+static unsigned char count = 0;
+
+int median_filter(int new_sample)
+{
+	unsigned char i, j;
+	int key;
+
+	// Insert into circular buffer
+	buffer[index] = new_sample;
+	index++;
+	if (index >= WINDOW_SIZE)
+	index = 0;
+
+	if (count < WINDOW_SIZE)
+	count++;
+
+	// Copy active elements into sorted array
+	for (i = 0; i < count; i++)
+	sorted[i] = buffer[i];
+
+	// Insertion sort (in-place on sorted[])
+	for (i = 1; i < count; i++) {
+		key = sorted[i];
+		j = i;
+
+		while (j > 0 && sorted[j - 1] > key) {
+			sorted[j] = sorted[j - 1];
+			j--;
+		}
+		sorted[j] = key;
+	}
+
+	// Return median
+	return sorted[count >> 1]; // divide by 2
+}
+
+
 #define CONV_IND	40
 uint8_t jumpInd[4] = {0};
 int lastParaValue[4] = {0};
@@ -814,7 +854,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 {
 	uint8_t retVal = -1, checkSum;
 	unsigned int value, value1;
-	int convertedValue;
+	int convertedValue, diff=0;
     static uint8_t ignoreCnter[2]={0};
 	
     wdt_reset();			//Serve Watchdog Timer
@@ -859,19 +899,22 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					//value = convertedValue = 0;
 				//}
 //
-				//if(abs(convertedValue-lastParaValue[0])<200)
+				//convertedValue = median_filter(convertedValue);
+				//
+				//if(ignoreCnter[0]<5)
 				//{
 					//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-					//jumpInd[0]=0;
 					//lastParaValue[0]=convertedValue;
+					//ignoreCnter[0]++;
 				//}
 				//else
 				//{
-					//jumpInd[0]++;
-					//if(jumpInd[0]>=CONV_IND)
+					//diff = convertedValue-lastParaValue[0];
+					//if(diff<1000)
 					//{
-						//jumpInd[0]=0;
+						//convertedValue = convertedValue + (0.02 * diff);
 						//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+						//lastParaValue[0]=convertedValue;
 					//}
 				//}
 			//}
@@ -889,21 +932,23 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//{
 					//value = convertedValue = 0;
 				//}
-				////AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
 				//
-				//if(abs(convertedValue-lastParaValue[1])<400)
+				//convertedValue = median_filter(convertedValue);
+				//
+				//if(ignoreCnter[0]<5)
 				//{
 					//AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
-					//jumpInd[1]=0;
-					//lastParaValue[1]=convertedValue;
+					//lastParaValue[0]=convertedValue;
+					//ignoreCnter[0]++;
 				//}
 				//else
 				//{
-					//jumpInd[1]++;
-					//if(jumpInd[1]>=CONV_IND)
+					//diff = convertedValue-lastParaValue[0];
+					//if(diff<1000)
 					//{
-						//jumpInd[1]=0;
+						//convertedValue = convertedValue + (0.02 * diff);
 						//AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
+						//lastParaValue[0]=convertedValue;
 					//}
 				//}
 			//}
@@ -945,6 +990,8 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 		//}
 		//else 
 		//if( GetParameterValue(TEMP_RH_SENS_TYPE) == TEMP_RH_SENS_IDT_HS3100 )
+		
+		
 		{
 			if(IsTemperatureEnabled() || IsHumidityEnabled())
 			{
@@ -970,35 +1017,23 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value = convertedValue = 0;
 				}
 				
-				convertedValue = Kalman_Update(&Kalmanfilter[TEMPERATURE_VAL_INDEX], convertedValue);
+				convertedValue = median_filter(convertedValue);
 				
-				//if(convertedValue<4000)
+				if(ignoreCnter[0]<5)
 				{
-					if(ignoreCnter[0]<10)
+					AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
+					lastParaValue[0]=convertedValue;
+					ignoreCnter[0]++;
+				}
+				else
+				{
+					diff = convertedValue-lastParaValue[0];	
+					if(diff<1000)	
 					{
+						convertedValue = convertedValue + (0.02 * diff);
 						AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 						lastParaValue[0]=convertedValue;
-						ignoreCnter[0]++;
-					}
-					else
-					{
-						if(abs(convertedValue-lastParaValue[0])<300)
-						{
-							AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-							jumpInd[0]=0;
-							lastParaValue[0]=convertedValue;
-						}
-						/*else
-						{
-							jumpInd[0]++;
-							if(jumpInd[0]>=CONV_IND)
-							{
-								AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
-								jumpInd[0]=0;
-								lastParaValue[0]=convertedValue;
-							}
-						}*/
-					}
+					}		
 				}
 			}
 		
@@ -1014,32 +1049,23 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 					value1 = convertedValue = 0;
 				}
 				
-				convertedValue = Kalman_Update(&Kalmanfilter[HUMIDITY_VAL_INDEX], convertedValue);
-	
-				if(ignoreCnter[1]<10)
+				convertedValue = median_filter(convertedValue);
+				
+				if(ignoreCnter[0]<5)
 				{
 					AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
-					lastParaValue[1]=convertedValue;
-					ignoreCnter[1]++;
+					lastParaValue[0]=convertedValue;
+					ignoreCnter[0]++;
 				}
 				else
 				{
-					if(abs(convertedValue-lastParaValue[1])<500)
+					diff = convertedValue-lastParaValue[0];
+					if(diff<1000)
 					{
+						convertedValue = convertedValue + (0.02 * diff);
 						AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
-						jumpInd[1]=0;
-						lastParaValue[1]=convertedValue;
+						lastParaValue[0]=convertedValue;
 					}
-					/*else
-					{
-						jumpInd[1]++;
-						if(jumpInd[1]>=CONV_IND)
-						{
-							AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
-							jumpInd[1]=0;
-							lastParaValue[1]=convertedValue;
-						}
-					}*/
 				}
 			}
 		}
@@ -1186,7 +1212,7 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 
 static void AveragePara( uint8_t SenNo, uint8_t error, unsigned int rawVal, int convertedVal )
 {
-	//convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
+	convertedVal = Kalman_Update(&Kalmanfilter[SenNo], convertedVal);
 	
 	OSSemaTakeEver(DeviceValueMutex);
 	sensorVal[SenNo].errorCode = error;
