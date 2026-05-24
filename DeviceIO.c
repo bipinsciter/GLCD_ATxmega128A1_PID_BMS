@@ -1,5 +1,6 @@
 #include <avr/io.h>        // This defers to avr/io.h for GCC
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <avr/wdt.h>
 #include "os_api.h"
@@ -13,8 +14,6 @@
 #include "locked_printf.h"
 #include "PressureSens.h"
 #include "eepromAdr.h"
-//#include "ParticalSenser_IPS7100.h"
-//#include "ParticalSenser_SEN55.h"
 
 #define TRUE  1
 #define FALSE 0
@@ -797,8 +796,8 @@ void GetInput( uint8_t * retVal )
 
 #define WINDOW_SIZE  9   // must be odd, <= 39
 
-static int buffer[WINDOW_SIZE];
-static int sorted[WINDOW_SIZE];   // temp buffer (global, no stack use)
+static int buffer[WINDOW_SIZE]={0};
+static int sorted[WINDOW_SIZE]={0};   // temp buffer (global, no stack use)
 
 static unsigned char index = 0;
 static unsigned char count = 0;
@@ -897,11 +896,15 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//else
 				//{
 					//value = convertedValue = 0;
+					//ignoreCnter[0]=0;
+					//Kalman_Init(&Kalmanfilter[TEMPERATURE_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+					//memset(buffer,0,WINDOW_SIZE);
+					//memset(sorted,0,WINDOW_SIZE);
 				//}
 //
 				//convertedValue = median_filter(convertedValue);
 				//
-				//if(ignoreCnter[0]<5)
+				//if(ignoreCnter[0]<15)
 				//{
 					//AveragePara(TEMPERATURE_VAL_INDEX, retVal, value, convertedValue );
 					//lastParaValue[0]=convertedValue;
@@ -931,11 +934,16 @@ void TEMPRHIO_FUNC_NAME( void * taskPara )
 				//else
 				//{
 					//value = convertedValue = 0;
+					//ignoreCnter[1]=0;
+					//Kalman_Init(&Kalmanfilter[HUMIDITY_VAL_INDEX], 0.01, 0.1, 0.0);  // Initialize with default values
+					//
+					//memset(buffer,0,WINDOW_SIZE);
+					//memset(sorted,0,WINDOW_SIZE);
 				//}
 				//
 				//convertedValue = median_filter(convertedValue);
 				//
-				//if(ignoreCnter[0]<5)
+				//if(ignoreCnter[0]<15)
 				//{
 					//AveragePara(HUMIDITY_VAL_INDEX, retVal, value, convertedValue );
 					//lastParaValue[0]=convertedValue;

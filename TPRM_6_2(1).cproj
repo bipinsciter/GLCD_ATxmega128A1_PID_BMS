@@ -134,7 +134,7 @@
     </ToolchainSettings>
     <BuildTarget>all</BuildTarget>
     <CleanTarget>clean</CleanTarget>
-    <OutputFileName>TPRM_V2_7_0</OutputFileName>
+    <OutputFileName>TPRM_V2_8_0</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputType>Executable</OutputType>
   </PropertyGroup>
